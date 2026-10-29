@@ -40,7 +40,7 @@ timeout /t 5 /nobreak >nul
 
 echo.
 echo [7/7] Launching Frontend Web Server (Port 3000)...
-start "Frontend-Server-3000" cmd /k "title Frontend Server (3000) && cd /d "%~dp0frontend" && node server.js"
+start "Frontend-Server-3000" cmd /k "title Frontend Server (3000) && cd /d "%~dp0frontend" && node local-server.js"
 timeout /t 3 /nobreak >nul
 
 echo.
