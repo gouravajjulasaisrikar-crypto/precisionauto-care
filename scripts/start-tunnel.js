@@ -1,4 +1,4 @@
-const { spawn, exec } = require('child_process');
+const { spawn, exec, execSync } = require('child_process');
 const path = require('path');
 const http = require('http');
 
@@ -8,35 +8,75 @@ console.log('\n=================================================================
 console.log('   INITIALIZING SECURE CLOUDFLARE PUBLIC TUNNEL FOR REVIEW...');
 console.log('===================================================================\n');
 
-function ensureFrontendServer() {
+// 1. Terminate any previous orphaned cloudflared processes
+try {
+    execSync('taskkill /F /IM cloudflared.exe 2>nul', { stdio: 'ignore' });
+} catch (e) {}
+
+function checkPort3000() {
     return new Promise((resolve) => {
         const req = http.get('http://127.0.0.1:3000', (res) => {
-            console.log(' [OK] Local server detected running on port 3000.');
-            resolve();
+            resolve(res.statusCode === 200);
         });
-        req.on('error', () => {
-            console.log(' [!] Port 3000 is inactive. Auto-starting local-server.js...');
-            const server = spawn(process.execPath, [path.join(__dirname, '..', 'local-server.js')], {
-                cwd: path.join(__dirname, '..'),
-                stdio: 'inherit',
-                detached: false
-            });
-            server.on('error', (err) => {
-                console.error('Failed to spawn local-server.js:', err);
-            });
-            setTimeout(() => {
-                console.log(' [OK] Local frontend server initialized on port 3000.');
-                resolve();
-            }, 2500);
+        req.on('error', () => resolve(false));
+        req.setTimeout(1000, () => {
+            req.destroy();
+            resolve(false);
         });
     });
 }
 
+async function ensureFrontendServer() {
+    const isRunning = await checkPort3000();
+    if (isRunning) {
+        console.log(' [OK] Local frontend server is active on port 3000.');
+        return;
+    }
+
+    console.log(' [!] Port 3000 is inactive. Spawning local-server.js...');
+    const serverProcess = spawn(process.execPath, [path.join(__dirname, '..', 'local-server.js')], {
+        cwd: path.join(__dirname, '..'),
+        stdio: 'inherit',
+        detached: false
+    });
+
+    serverProcess.on('error', (err) => {
+        console.error('Failed to spawn local-server.js:', err);
+    });
+
+    // Poll until port 3000 is ready (up to 15 seconds)
+    for (let i = 0; i < 30; i++) {
+        await new Promise(r => setTimeout(r, 500));
+        if (await checkPort3000()) {
+            console.log(' [OK] Local frontend server is now ready on port 3000.');
+            return;
+        }
+    }
+    console.warn(' [!] Warning: Server spawn timed out, continuing tunnel initialization...');
+}
+
+let cloudflaredChild = null;
+
+function cleanup() {
+    if (cloudflaredChild) {
+        try {
+            cloudflaredChild.kill();
+        } catch (e) {}
+    }
+    try {
+        execSync('taskkill /F /IM cloudflared.exe 2>nul', { stdio: 'ignore' });
+    } catch (e) {}
+}
+
+process.on('SIGINT', () => { cleanup(); process.exit(0); });
+process.on('SIGTERM', () => { cleanup(); process.exit(0); });
+process.on('exit', () => cleanup());
+
 async function startTunnel() {
     await ensureFrontendServer();
 
-    console.log(' [*] Connecting Cloudflare Edge Tunnel to http://127.0.0.1:3000...\n');
-    const child = spawn(CLOUDFLARED_PATH, ['tunnel', '--url', 'http://127.0.0.1:3000'], {
+    console.log(' [*] Establishing Cloudflare Edge Tunnel -> http://127.0.0.1:3000...\n');
+    cloudflaredChild = spawn(CLOUDFLARED_PATH, ['tunnel', '--url', 'http://127.0.0.1:3000', '--no-autoupdate'], {
         stdio: ['ignore', 'pipe', 'pipe']
     });
 
@@ -75,10 +115,10 @@ async function startTunnel() {
         }
     }
 
-    child.stdout.on('data', parseOutput);
-    child.stderr.on('data', parseOutput);
+    cloudflaredChild.stdout.on('data', parseOutput);
+    cloudflaredChild.stderr.on('data', parseOutput);
 
-    child.on('close', (code) => {
+    cloudflaredChild.on('close', (code) => {
         console.log(`Tunnel closed (code ${code})`);
     });
 }
