@@ -78,6 +78,7 @@ function switchTab(tabId) {
     if (tabId === 'booking-tab') loadBookings();
     if (tabId === 'records-tab') searchVehicleRecords();
     if (tabId === 'billing-tab') loadBills();
+    if (tabId === 'security-tab') renderAdminUserManagementTable();
 }
 
 // Update UI with Auth State & Enforce Role-Based Visibility
@@ -179,8 +180,13 @@ function applyRolePermissions(role) {
             btnBilling.querySelector('span:last-child').textContent = 'Invoices & Billing';
         }
         if (btnEureka) btnEureka.style.display = 'flex';
-        if (btnSecurity) btnSecurity.style.display = 'flex';
+        if (btnSecurity) {
+            btnSecurity.style.display = 'flex';
+            const secLabel = btnSecurity.querySelector('span:last-child');
+            if (secLabel) secLabel.textContent = 'Security & Accounts';
+        }
 
+        renderAdminUserManagementTable();
         switchTab('booking-tab');
     }
 
@@ -347,14 +353,19 @@ let isTokenMasked = false;
 function getUserDatabase() {
     try {
         const stored = localStorage.getItem('pa_user_database');
-        if (stored) return JSON.parse(stored);
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                return parsed.map(u => ({ ...u, status: u.status || 'ACTIVE' }));
+            }
+        }
     } catch (e) {}
 
     const defaultDb = [
-        { id: 1, email: 'admin@precisionauto.com', password: 'admin123', fullName: 'System Administrator', role: 'ROLE_ADMIN' },
-        { id: 2, email: 'gouravajjulasaisrikar@gmail.com', password: 'admin123', fullName: 'Sai Srikar (Admin)', role: 'ROLE_ADMIN' },
-        { id: 3, email: 'customer@precisionauto.com', password: 'cust123', fullName: 'Customer', role: 'ROLE_CUSTOMER' },
-        { id: 4, email: 'technician@precisionauto.com', password: 'tech123', fullName: 'Technician', role: 'ROLE_TECHNICIAN' }
+        { id: 1, email: 'admin@precisionauto.com', password: 'admin123', fullName: 'System Administrator', role: 'ROLE_ADMIN', status: 'ACTIVE' },
+        { id: 2, email: 'gouravajjulasaisrikar@gmail.com', password: 'admin123', fullName: 'Sai Srikar (Admin)', role: 'ROLE_ADMIN', status: 'ACTIVE' },
+        { id: 3, email: 'customer@precisionauto.com', password: 'cust123', fullName: 'Customer', role: 'ROLE_CUSTOMER', status: 'ACTIVE' },
+        { id: 4, email: 'technician@precisionauto.com', password: 'tech123', fullName: 'Technician', role: 'ROLE_TECHNICIAN', status: 'ACTIVE' }
     ];
     localStorage.setItem('pa_user_database', JSON.stringify(defaultDb));
     return defaultDb;
@@ -739,6 +750,12 @@ async function handleAuthSignIn(e) {
             return;
         }
 
+        // Check if account has been suspended/disabled by Administrator
+        if (authUser.status === 'DISABLED') {
+            showToast('Account Suspended', 'This account has been deactivated by the Administrator. Access denied.', 'error');
+            return;
+        }
+
         // Verify role match
         if (authUser.role && authUser.role !== currentSelectedRole) {
             const userRoleName = authUser.role.replace('ROLE_', '');
@@ -859,6 +876,7 @@ function handleOtpSubmit(e) {
                 email: session.email,
                 password: session.password,
                 role: session.role,
+                status: 'ACTIVE',
                 createdAt: new Date().toISOString()
             };
             saveUserToDatabase(newUser);
@@ -1072,6 +1090,139 @@ function setSession(token, userId, username, role, fullName, email) {
     localStorage.setItem('pa_fullname', fullName);
     localStorage.setItem('pa_email', email);
     initAuthUI();
+}
+
+// ==================== ENTERPRISE ACCOUNT GOVERNANCE ====================
+
+// Render User Management Directory in Admin Security Tab
+function renderAdminUserManagementTable() {
+    const tbody = document.getElementById('admin-user-table-body');
+    if (!tbody) return;
+
+    const db = getUserDatabase();
+    if (!db || db.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center" style="color: var(--text-muted); padding: 1.5rem;">No user accounts found in directory.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = db.map(user => {
+        const isAdmin = user.role === 'ROLE_ADMIN' || user.email === 'admin@precisionauto.com' || user.email === 'gouravajjulasaisrikar@gmail.com';
+        const isSelf = authState && authState.email && authState.email.toLowerCase() === user.email.toLowerCase();
+        const status = user.status || 'ACTIVE';
+        const isBlocked = status === 'DISABLED';
+
+        const statusBadge = isBlocked
+            ? `<span class="badge-tag danger" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);">● Suspended</span>`
+            : `<span class="badge-tag success" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);">● Active</span>`;
+
+        const roleBadge = user.role === 'ROLE_ADMIN'
+            ? `<span class="badge-tag primary">Admin</span>`
+            : user.role === 'ROLE_TECHNICIAN'
+            ? `<span class="badge-tag warning">Technician</span>`
+            : `<span class="badge-tag info">Customer</span>`;
+
+        let actionBtns = '';
+        if (isAdmin || isSelf) {
+            actionBtns = `<span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Protected Admin</span>`;
+        } else {
+            const toggleColor = isBlocked ? '#34d399' : '#f59e0b';
+            const toggleBorder = isBlocked ? 'rgba(16, 185, 129, 0.4)' : 'rgba(245, 158, 11, 0.4)';
+            const toggleText = isBlocked ? 'Enable Access' : 'Disable Access';
+            const toggleIcon = isBlocked 
+                ? '<svg class="svg-icon xs" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>'
+                : '<svg class="svg-icon xs" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>';
+
+            actionBtns = `
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <button type="button" class="btn-luxury btn-luxury-outline btn-sm" 
+                            style="color: ${toggleColor}; border-color: ${toggleBorder}; padding: 0.25rem 0.65rem; font-size: 0.75rem;" 
+                            onclick="toggleUserAccountStatus('${user.email}')">
+                        ${toggleIcon}
+                        <span>${toggleText}</span>
+                    </button>
+                    <button type="button" class="btn-luxury btn-luxury-outline btn-sm" 
+                            style="color: #f87171; border-color: rgba(239, 68, 68, 0.4); padding: 0.25rem 0.65rem; font-size: 0.75rem;" 
+                            onclick="deleteUserAccount('${user.email}')" title="Permanently Delete Account">
+                        <svg class="svg-icon xs" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        <span>Delete</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        return `
+            <tr>
+                <td><strong>${user.fullName || 'User'}</strong></td>
+                <td><code>${user.email}</code></td>
+                <td>${roleBadge}</td>
+                <td>${statusBadge}</td>
+                <td>${actionBtns}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Toggle user status between ACTIVE and DISABLED
+function toggleUserAccountStatus(email) {
+    const db = getUserDatabase();
+    const user = db.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (!user) {
+        showToast('Error', 'User not found in directory.', 'error');
+        return;
+    }
+
+    if (user.role === 'ROLE_ADMIN' || user.email === 'admin@precisionauto.com' || user.email === 'gouravajjulasaisrikar@gmail.com') {
+        showToast('Operation Blocked', 'Administrator accounts cannot be disabled.', 'warning');
+        return;
+    }
+
+    const newStatus = (user.status === 'DISABLED') ? 'ACTIVE' : 'DISABLED';
+    user.status = newStatus;
+    localStorage.setItem('pa_user_database', JSON.stringify(db));
+
+    if (newStatus === 'DISABLED') {
+        showToast('Account Suspended', `User ${email} has been deactivated. They will be blocked from logging in.`, 'warning');
+    } else {
+        showToast('Account Activated', `User ${email} has been re-activated and can now log in.`, 'success');
+    }
+
+    renderAdminUserManagementTable();
+}
+
+// Delete user account permanently
+function deleteUserAccount(email) {
+    if (!confirm(`Are you sure you want to permanently delete the account for "${email}"?`)) {
+        return;
+    }
+
+    let db = getUserDatabase();
+    const user = db.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (!user) {
+        showToast('Error', 'User not found in directory.', 'error');
+        return;
+    }
+
+    if (user.role === 'ROLE_ADMIN' || user.email === 'admin@precisionauto.com' || user.email === 'gouravajjulasaisrikar@gmail.com') {
+        showToast('Operation Blocked', 'Administrator accounts cannot be deleted.', 'warning');
+        return;
+    }
+
+    db = db.filter(u => u.email.toLowerCase() !== email.toLowerCase());
+    localStorage.setItem('pa_user_database', JSON.stringify(db));
+    showToast('Account Deleted', `Account for ${email} has been permanently deleted.`, 'info');
+    renderAdminUserManagementTable();
+}
+
+// Reset Directory to Factory Defaults
+function resetUserDirectory() {
+    if (!confirm('Are you sure you want to reset the user directory? This will remove all newly registered customer/technician accounts and restore original default accounts.')) {
+        return;
+    }
+
+    localStorage.removeItem('pa_user_database');
+    getUserDatabase();
+    showToast('Directory Reset', 'User directory reset to factory default accounts.', 'success');
+    renderAdminUserManagementTable();
 }
 
 // ---------------- PERSISTENT STORE HELPERS ----------------

@@ -440,7 +440,7 @@
                         <span class="btn-icon">
                             <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         </span>
-                        <span>Token Inspector</span>
+                        <span>Security & Accounts</span>
                     </button>
                 </nav>
 
@@ -796,6 +796,39 @@
                                 <span class="label">Client Email</span>
                                 <strong id="token-email">-</strong>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Enterprise Account Governance & Directory Management -->
+                    <div class="glass-card full-col" style="margin-top: 1.5rem;">
+                        <div class="glass-card-header">
+                            <h3>
+                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                <span>Enterprise User Directory & Account Governance</span>
+                            </h3>
+                            <button type="button" class="btn-luxury btn-luxury-outline btn-sm" style="color: #f87171; border-color: rgba(239, 68, 68, 0.4);" onclick="resetUserDirectory()">
+                                <svg class="svg-icon xs" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                                <span>Reset Directory to Factory Defaults</span>
+                            </button>
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                            Manage active accounts, disable login authorization (Suspend), re-enable, or permanently delete newly registered accounts:
+                        </p>
+                        <div class="table-responsive">
+                            <table class="luxury-table">
+                                <thead>
+                                    <tr>
+                                        <th>Principal / Name</th>
+                                        <th>Email Address</th>
+                                        <th>Assigned Role</th>
+                                        <th>Account Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-user-table-body">
+                                    <tr><td colspan="5" class="text-center" style="color: var(--text-muted); padding: 1.5rem;">Loading user directory...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
