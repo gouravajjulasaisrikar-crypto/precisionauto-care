@@ -1,13 +1,19 @@
 const nodemailer = require('nodemailer');
 
-// Verified Google SMTP Transporter for Real OTP Delivery
+// High-Performance Pooled Google SMTP Transporter
 const mailTransporter = nodemailer.createTransport({
+    pool: true,
+    maxConnections: 3,
+    maxMessages: 100,
     host: 'smtp.gmail.com',
     port: 587,
     secure: false,
     auth: {
         user: 'gouravajjulasaisrikar@gmail.com',
         pass: 'zlfwczrgnpwxqzwf'
+    },
+    tls: {
+        rejectUnauthorized: false
     }
 });
 
@@ -28,7 +34,6 @@ module.exports = async (req, res) => {
     }
 
     try {
-        // Parse request body if stringified
         let body = req.body;
         if (typeof body === 'string') {
             try { body = JSON.parse(body); } catch (e) {}
@@ -38,15 +43,23 @@ module.exports = async (req, res) => {
         const { to, otp, name, action } = body;
         const targetEmail = (to && to.includes('@')) ? to.trim() : 'gouravajjulasaisrikar@gmail.com';
 
-        console.log(`[Vercel Serverless SMTP] Dispatching OTP ${otp} to ${targetEmail}...`);
-
         const isSignup = (action === 'SIGNUP');
+        const subject = isSignup 
+            ? `PrecisionAuto Care • Registration Security Code: ${otp}`
+            : `PrecisionAuto Care • Login Verification Code: ${otp}`;
+
+        const textContent = `Your PrecisionAuto Care verification code is: ${otp}. Valid for 120 seconds. Do not share this code.`;
+
         const mailInfo = await mailTransporter.sendMail({
             from: '"PrecisionAuto Care Security" <gouravajjulasaisrikar@gmail.com>',
             to: targetEmail,
-            subject: isSignup 
-                ? `PrecisionAuto Care • Account Registration OTP: ${otp}`
-                : `PrecisionAuto Care • Login Verification Code: ${otp}`,
+            subject: subject,
+            text: textContent,
+            headers: {
+                'X-Priority': '1 (Highest)',
+                'X-MSMail-Priority': 'High',
+                'Importance': 'High'
+            },
             html: `
                 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #060913; color: #ffffff; padding: 32px; border-radius: 12px; max-width: 520px; margin: auto; border: 1px solid rgba(56, 189, 248, 0.3);">
                     <div style="text-align: center; margin-bottom: 24px;">
@@ -66,14 +79,15 @@ module.exports = async (req, res) => {
             `
         });
 
-        console.log(`[Vercel Serverless SMTP] Message delivered! ID: ${mailInfo.messageId}`);
+        console.log(`[High-Speed SMTP] Delivered to ${targetEmail} in fast-lane. ID: ${mailInfo.messageId}`);
         return res.status(200).json({
             status: 'DELIVERED',
+            success: true,
             messageId: mailInfo.messageId,
             recipient: targetEmail
         });
     } catch (err) {
-        console.error('[Vercel Serverless SMTP Error]', err);
+        console.error('[High-Speed SMTP Error]', err);
         return res.status(500).json({ status: 'ERROR', message: err.message });
     }
 };
