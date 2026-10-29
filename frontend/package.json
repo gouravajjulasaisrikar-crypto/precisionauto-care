@@ -1,9 +1,6 @@
 {
   "name": "precisionauto-frontend",
   "version": "1.0.0",
-  "scripts": {
-    "build": "echo 'Static assets ready'"
-  },
   "dependencies": {
     "nodemailer": "^6.9.15"
   }
