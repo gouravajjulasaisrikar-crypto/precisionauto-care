@@ -922,16 +922,22 @@ function clearOtpDigitInputs() {
     inputs.forEach(inp => { inp.value = ''; });
 }
 
-function autoFillOtp() {
+function autoFillOtp(andSubmit = false) {
     if (!pendingAuthSession) return;
     const code = pendingAuthSession.otp || '123456';
     const inputs = document.querySelectorAll('.otp-digit-input');
     inputs.forEach((inp, i) => {
         inp.value = code[i] || '';
     });
-    const verifyBtn = document.getElementById('otp-verify-btn');
-    if (verifyBtn) verifyBtn.focus();
     showToast('Auto-Filled', '6-digit OTP code populated.', 'info');
+    if (andSubmit) {
+        setTimeout(() => {
+            handleOtpSubmit();
+        }, 150);
+    } else {
+        const verifyBtn = document.getElementById('otp-verify-btn');
+        if (verifyBtn) verifyBtn.focus();
+    }
 }
 
 function resendOtp() {
