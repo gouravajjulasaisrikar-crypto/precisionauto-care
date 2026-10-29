@@ -1,19 +1,13 @@
 const nodemailer = require('nodemailer');
 
-// High-Performance Pooled Google SMTP Transporter
+// Verified Direct Google SMTP Transporter for Vercel Serverless
 const mailTransporter = nodemailer.createTransport({
-    pool: true,
-    maxConnections: 3,
-    maxMessages: 100,
     host: 'smtp.gmail.com',
     port: 587,
     secure: false,
     auth: {
         user: 'gouravajjulasaisrikar@gmail.com',
         pass: 'zlfwczrgnpwxqzwf'
-    },
-    tls: {
-        rejectUnauthorized: false
     }
 });
 
@@ -50,6 +44,8 @@ module.exports = async (req, res) => {
 
         const textContent = `Your PrecisionAuto Care verification code is: ${otp}. Valid for 120 seconds. Do not share this code.`;
 
+        console.log(`[SMTP Dispatch] Sending OTP ${otp} to ${targetEmail}...`);
+
         const mailInfo = await mailTransporter.sendMail({
             from: '"PrecisionAuto Care Security" <gouravajjulasaisrikar@gmail.com>',
             to: targetEmail,
@@ -79,7 +75,7 @@ module.exports = async (req, res) => {
             `
         });
 
-        console.log(`[High-Speed SMTP] Delivered to ${targetEmail} in fast-lane. ID: ${mailInfo.messageId}`);
+        console.log(`[SMTP Dispatch] Successfully sent to ${targetEmail}. Message ID: ${mailInfo.messageId}`);
         return res.status(200).json({
             status: 'DELIVERED',
             success: true,
@@ -87,7 +83,7 @@ module.exports = async (req, res) => {
             recipient: targetEmail
         });
     } catch (err) {
-        console.error('[High-Speed SMTP Error]', err);
+        console.error('[SMTP Dispatch Error]', err);
         return res.status(500).json({ status: 'ERROR', message: err.message });
     }
 };
