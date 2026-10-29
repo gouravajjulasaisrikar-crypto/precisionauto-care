@@ -177,4 +177,10 @@ public class AuthService {
         }
         return isValid;
     }
+
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + id));
+        userRepository.delete(user);
+    }
 }

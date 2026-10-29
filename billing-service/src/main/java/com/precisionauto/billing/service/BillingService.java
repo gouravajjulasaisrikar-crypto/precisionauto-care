@@ -64,4 +64,22 @@ public class BillingService {
     public Billing payBill(Long billId) {
         return updateStatus(billId, "PAID");
     }
+
+    public Billing updateBill(Long billId, Billing updated) {
+        Billing existing = billingRepository.findById(billId)
+                .orElseThrow(() -> new IllegalArgumentException("Bill not found with ID: " + billId));
+        if (updated.getLaborCharge() != null) existing.setLaborCharge(updated.getLaborCharge());
+        if (updated.getPartsCharge() != null) existing.setPartsCharge(updated.getPartsCharge());
+        if (updated.getTax() != null) existing.setTax(updated.getTax());
+        if (updated.getAmount() != null) existing.setAmount(updated.getAmount());
+        if (updated.getStatus() != null) existing.setStatus(updated.getStatus().toUpperCase());
+        if (updated.getDescription() != null) existing.setDescription(updated.getDescription());
+        return billingRepository.save(existing);
+    }
+
+    public void deleteBill(Long billId) {
+        Billing existing = billingRepository.findById(billId)
+                .orElseThrow(() -> new IllegalArgumentException("Bill not found with ID: " + billId));
+        billingRepository.delete(existing);
+    }
 }

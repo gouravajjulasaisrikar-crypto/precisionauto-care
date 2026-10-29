@@ -35,4 +35,19 @@ public class RecordService {
     public Optional<ServiceRecord> getRecordByBookingId(Long bookingId) {
         return recordRepository.findByBookingId(bookingId);
     }
+
+    public ServiceRecord updateRecord(Long recordId, ServiceRecord updated) {
+        ServiceRecord existing = recordRepository.findById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("Record not found with ID: " + recordId));
+        if (updated.getServiceDetails() != null) existing.setServiceDetails(updated.getServiceDetails());
+        if (updated.getPartsReplaced() != null) existing.setPartsReplaced(updated.getPartsReplaced());
+        if (updated.getTechnicianId() != null) existing.setTechnicianId(updated.getTechnicianId());
+        return recordRepository.save(existing);
+    }
+
+    public void deleteRecord(Long recordId) {
+        ServiceRecord existing = recordRepository.findById(recordId)
+                .orElseThrow(() -> new IllegalArgumentException("Record not found with ID: " + recordId));
+        recordRepository.delete(existing);
+    }
 }

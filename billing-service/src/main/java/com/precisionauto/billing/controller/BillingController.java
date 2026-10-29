@@ -74,6 +74,30 @@ public class BillingController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBill(@PathVariable("id") Long id, @RequestBody Billing billing) {
+        try {
+            Billing updated = billingService.updateBill(id, billing);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteBill(@PathVariable("id") Long id) {
+        try {
+            billingService.deleteBill(id);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Invoice #" + id + " successfully deleted.",
+                    "billId", id,
+                    "status", "DELETED"
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
         return ResponseEntity.ok(Map.of("status", "UP", "service", "billing-service"));

@@ -174,4 +174,24 @@ public class BookingService {
                 createdBill
         );
     }
+
+    @Transactional
+    public void deleteBooking(Long id) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found with ID: " + id));
+        bookingRepository.delete(booking);
+        log.info("Booking with ID {} successfully deleted.", id);
+    }
+
+    @Transactional
+    public Booking updateBooking(Long id, BookingRequest request) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found with ID: " + id));
+        if (request.getVehicleId() != null) booking.setVehicleId(request.getVehicleId());
+        if (request.getServiceDate() != null) booking.setServiceDate(request.getServiceDate());
+        if (request.getBayId() != null) booking.setBayId(request.getBayId());
+        if (request.getServiceType() != null) booking.setServiceType(request.getServiceType());
+        if (request.getNotes() != null) booking.setNotes(request.getNotes());
+        return bookingRepository.save(booking);
+    }
 }

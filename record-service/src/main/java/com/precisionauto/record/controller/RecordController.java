@@ -50,6 +50,30 @@ public class RecordController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateRecord(@PathVariable("id") Long id, @RequestBody ServiceRecord record) {
+        try {
+            ServiceRecord updated = recordService.updateRecord(id, record);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteRecord(@PathVariable("id") Long id) {
+        try {
+            recordService.deleteRecord(id);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Service record #" + id + " successfully deleted.",
+                    "recordId", id,
+                    "status", "DELETED"
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
         return ResponseEntity.ok(Map.of("status", "UP", "service", "record-service"));

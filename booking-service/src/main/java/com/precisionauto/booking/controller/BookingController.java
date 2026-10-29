@@ -102,6 +102,30 @@ public class BookingController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBooking(@PathVariable("id") Long id, @RequestBody BookingRequest request) {
+        try {
+            Booking updated = bookingService.updateBooking(id, request);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteBooking(@PathVariable("id") Long id) {
+        try {
+            bookingService.deleteBooking(id);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Booking #" + id + " successfully deleted.",
+                    "bookingId", id,
+                    "status", "DELETED"
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
         return ResponseEntity.ok(Map.of("status", "UP", "service", "booking-service"));

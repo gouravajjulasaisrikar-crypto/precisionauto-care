@@ -59,6 +59,16 @@ public class AuthController {
         return ResponseEntity.ok(authService.getAllUsers());
     }
 
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+        try {
+            authService.deleteUser(id);
+            return ResponseEntity.ok(Map.of("message", "User #" + id + " successfully deleted.", "userId", id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
         return ResponseEntity.ok(Map.of("status", "UP", "service", "auth-service"));
