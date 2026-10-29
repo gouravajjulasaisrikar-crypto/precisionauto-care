@@ -5,7 +5,7 @@ const os = require('os');
 const nodemailer = require('nodemailer');
 
 const PORT = 3000;
-const PUBLIC_DIR = __dirname;
+const PUBLIC_DIR = path.join(__dirname, 'frontend');
 const GATEWAY_TARGET = {
     host: '127.0.0.1',
     port: 8080
