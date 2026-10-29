@@ -7,6 +7,9 @@
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 WORKDIR /workspace
 
+# Limit Maven JVM to 384MB so Render's 512MB build container never runs out of memory
+ENV MAVEN_OPTS="-Xmx384m -XX:+TieredCompilation -XX:TieredStopAtLevel=1"
+
 # Copy POM files for dependency resolution
 COPY pom.xml .
 COPY eureka-server/pom.xml eureka-server/
