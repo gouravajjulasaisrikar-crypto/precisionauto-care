@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  # 1. Eureka Service Registry
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: precisionauto-eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - precisionauto-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Auth Service
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: precisionauto-auth
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=auth-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - precisionauto-net
+
+  # 3. Record Service
+  record-service:
+    build:
+      context: ./record-service
+      dockerfile: Dockerfile
+    container_name: precisionauto-record
+    ports:
+      - "8083:8083"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=record-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - precisionauto-net
+
+  # 4. Billing Service
+  billing-service:
+    build:
+      context: ./billing-service
+      dockerfile: Dockerfile
+    container_name: precisionauto-billing
+    ports:
+      - "8084:8084"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=billing-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - precisionauto-net
+
+  # 5. Service Booking Service
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    container_name: precisionauto-booking
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=booking-service
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      record-service:
+        condition: service_started
+      billing-service:
+        condition: service_started
+    networks:
+      - precisionauto-net
+
+  # 6. Spring Cloud API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: precisionauto-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_APPLICATION_NAME=api-gateway
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      booking-service:
+        condition: service_started
+    networks:
+      - precisionauto-net
+
+networks:
+  precisionauto-net:
+    driver: bridge

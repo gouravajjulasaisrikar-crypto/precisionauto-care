@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PrecisionAuto Care - Viva & Project Review Guide</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 14mm 16mm 14mm 16mm;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #1e293b;
+            background: #ffffff;
+            line-height: 1.5;
+            font-size: 10.5pt;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            border-bottom: 2.5px solid #2563eb;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .title {
+            font-size: 20pt;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 4px 0;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            font-size: 11pt;
+            color: #475569;
+            margin: 0;
+            font-weight: 500;
+        }
+        .badge {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 8.5pt;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        h2 {
+            font-size: 13pt;
+            font-weight: 700;
+            color: #1e3a8a;
+            border-left: 4px solid #2563eb;
+            padding-left: 8px;
+            margin: 18px 0 8px 0;
+            page-break-after: avoid;
+        }
+        h3 {
+            font-size: 11pt;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 12px 0 4px 0;
+            page-break-after: avoid;
+        }
+        p {
+            margin: 0 0 8px 0;
+        }
+        .callout {
+            background: #f8fafc;
+            border-left: 3.5px solid #0284c7;
+            padding: 8px 12px;
+            border-radius: 0 6px 6px 0;
+            margin: 8px 0;
+            font-size: 10pt;
+        }
+        .callout-quote {
+            background: #f0fdf4;
+            border-left: 3.5px solid #16a34a;
+            padding: 8px 12px;
+            border-radius: 0 6px 6px 0;
+            margin: 8px 0;
+            font-style: italic;
+            color: #14532d;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0 14px 0;
+            font-size: 9.5pt;
+            page-break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 700;
+        }
+        tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+        code {
+            font-family: "JetBrains Mono", Consolas, Menlo, Monaco, monospace;
+            font-size: 9pt;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 1px 4px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+        pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: "JetBrains Mono", Consolas, monospace;
+            font-size: 8.5pt;
+            line-height: 1.4;
+            overflow-x: auto;
+            margin: 6px 0 10px 0;
+            page-break-inside: avoid;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        .meta-box {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 9pt;
+            color: #64748b;
+        }
+        .meta-item strong {
+            color: #334155;
+        }
+        .tag-success {
+            color: #166534;
+            font-weight: 600;
+        }
+        .tag-danger {
+            color: #991b1b;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div>
+            <h1 class="title">PrecisionAuto Care</h1>
+            <p class="subtitle">Comprehensive Project Review & Viva Revision Guide (SOA / Microservices)</p>
+        </div>
+        <div>
+            <span class="badge">Faculty Viva Prep</span>
+        </div>
+    </div>
+
+    <div class="meta-box">
+        <div class="meta-item"><strong>Architecture:</strong> Spring Cloud Microservices</div>
+        <div class="meta-item"><strong>Tech Stack:</strong> Java 21 LTS &bull; Spring Boot 3.3.4 &bull; Eureka &bull; Gateway</div>
+        <div class="meta-item"><strong>Ports:</strong> 8761 (Registry), 8080 (Gateway), 8081-8084 (Services)</div>
+    </div>
+
+    <!-- Section 1 -->
+    <h2>1. Project Summary in 4–5 Lines (The Elevator Pitch)</h2>
+    <div class="callout-quote">
+        "Sir, <strong>PrecisionAuto Care</strong> is an enterprise automotive fleet maintenance platform built on a <strong>Java 21 and Spring Cloud</strong> microservices architecture.<br>
+        It automates the workshop repair lifecycle and features an intelligent <strong>Collision Elimination Engine</strong> that prevents service bay double-bookings with automated conflict detection.<br>
+        The backend utilizes <strong>Netflix Eureka</strong> for service discovery, an <strong>API Gateway</strong> for centralized routing, and <strong>OpenFeign</strong> for inter-service communication across 6 independent services.<br>
+        When a technician completes a repair, the system automatically logs diagnostic history and generates a real-time, tax-calculated invoice (Labor + Parts + 10% Tax).<br>
+        The platform enforces zero-trust <strong>JWT authentication</strong> with Role-Based Access Control across Customer, Technician, and Admin roles."
+    </div>
+
+    <!-- Section 2 -->
+    <h2>2. Theoretical Purpose: What Real-World Problem Does It Solve?</h2>
+    <p>In commercial fleet operations (logistics, delivery companies, corporate transport), vehicle downtime equals financial loss. This platform eliminates 3 key operational bottlenecks:</p>
+    <ul>
+        <li><strong>Physical Bay Constraint Elimination:</strong> Workshops have limited hydraulic lift bays (<code>BAY-1</code>, <code>BAY-2</code>, <code>BAY-3</code>). Manual scheduling results in double-booking collisions. The platform mathematically prevents overlapping reservations using an automated collision avoidance algorithm returning <code>HTTP 409 Conflict</code>.</li>
+        <li><strong>Compliance & Diagnostic Audit Trail:</strong> Fleet regulations require audit records for all repairs. Every completed service immutably logs technician ID, date, diagnostics, and replaced parts into a centralized vehicle ledger.</li>
+        <li><strong>Automated Dynamic Financial Settlement:</strong> Eliminates manual accounting delays. The instant a repair is marked complete, labor and parts costs are aggregated with 10% tax into an itemized, payable invoice.</li>
+    </ul>
+
+    <!-- Section 3: Review 1 vs Review 2 Delta -->
+    <h2>3. Review 1 vs. Review 2: What Changed & Key Deliverables</h2>
+    <p>Use this summary table to demonstrate concrete technical advancement from the preliminary Review 1 milestone to Review 2:</p>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 22%;">System Capability</th>
+                <th style="width: 38%;">Review 1 (Baseline / Initial State)</th>
+                <th style="width: 40%;">Review 2 (Advanced Implementation)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Inter-Service Communication</strong></td>
+                <td>Isolated microservice silos; independent databases; mock static returns; no RPC.</td>
+                <td><strong>Spring Cloud OpenFeign RPC Orchestration:</strong> Completing a job in Booking Service triggers automated calls to Record Service &amp; Billing Service simultaneously.</td>
+            </tr>
+            <tr>
+                <td><strong>Security &amp; Gateway Layer</strong></td>
+                <td>Direct unauthenticated endpoint calls; no token verification or filtering.</td>
+                <td><strong>Stateless JWT (HMAC-SHA256) + BCrypt:</strong> Custom <code>JwtAuthenticationFilter</code> at API Gateway (8080) validates tokens and mutates <code>X-User-Id</code> / <code>X-User-Role</code> headers.</td>
+            </tr>
+            <tr>
+                <td><strong>Bay Conflict Prevention</strong></td>
+                <td>Basic appointment entries with risk of double-booking service bays.</td>
+                <td><strong>Collision Elimination Engine:</strong> Dynamic bay occupancy checks returning standard <strong>HTTP 409 Conflict</strong>; interactive simulator in UI.</td>
+            </tr>
+            <tr>
+                <td><strong>Invoicing &amp; Tax Calculation</strong></td>
+                <td>Static pre-seeded records; manual calculations; no lifecycle.</td>
+                <td><strong>Dynamic Financial Engine:</strong> Computes <code>(Labor + Parts) + 10% Tax</code> in real time; full payment lifecycle (<code>PENDING</code> &rarr; <code>PAID</code>) with one-click settlement.</td>
+            </tr>
+            <tr>
+                <td><strong>Frontend UI &amp; RBAC</strong></td>
+                <td>Rudimentary mockup without role security; generic styling.</td>
+                <td><strong>Enterprise Glassmorphic Dashboard:</strong> 4-tier Google Fonts, vector SVGs, canvas anti-bot CAPTCHA, brute-force guard, dynamic views for Customer, Tech, and Admin.</td>
+            </tr>
+            <tr>
+                <td><strong>1-Click Review Startup</strong></td>
+                <td>Manual command prompt startup for 6 individual services.</td>
+                <td><strong>Automated Master Startup (<code>START_PROJECT_FOR_REVIEW.bat</code>):</strong> Sequenced orchestration of Eureka, Gateway, 4 services, and Node frontend.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Section 4 -->
+    <h2>4. "Where is the Backend? Show Me the Working of the Backend!"</h2>
+    <p>When the faculty asks to see the backend, execute these <strong>4 concrete demonstration steps</strong>:</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">Demonstration Step</th>
+                <th style="width: 35%;">Action & URL to Open</th>
+                <th style="width: 40%;">What to Say to the Faculty</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1. Service Registry (The #1 Proof)</strong></td>
+                <td>Open <code>http://localhost:8761</code> in browser</td>
+                <td><em>"Here is our Netflix Eureka Service Registry. You can see all 5 microservices registered and active with their ports (8080, 8081, 8082, 8083, 8084). None of the URLs are hardcoded; they discover each other dynamically."</em></td>
+            </tr>
+            <tr>
+                <td><strong>2. Raw Backend REST Endpoints</strong></td>
+                <td>
+                    Open in browser tabs:<br>
+                    • <code>http://localhost:8084/bills</code><br>
+                    • <code>http://localhost:8082/bookings</code><br>
+                    • <code>http://localhost:8083/records</code><br>
+                    • <code>http://localhost:8080/actuator/health</code>
+                </td>
+                <td><em>"Here are the live REST APIs returning raw JSON directly from each service's embedded Tomcat engine. The frontend simply consumes these APIs through our Spring Cloud Gateway."</em></td>
+            </tr>
+            <tr>
+                <td><strong>3. IDE Consoles (STS)</strong></td>
+                <td>Switch to Spring Tool Suite (STS) Boot Dashboard</td>
+                <td><em>"In our IDE, each microservice runs as an independent Java process with its own Spring context, JPA repositories, and configuration."</em></td>
+            </tr>
+            <tr>
+                <td><strong>4. Live Inter-Service Orchestration</strong></td>
+                <td>Click <strong>"Complete Job"</strong> on the web UI while watching the <code>booking-service</code> console in STS</td>
+                <td><em>"Look at the console log: Booking Service didn't just update its table; it executed synchronous RPC calls via <strong>OpenFeign</strong> to Record Service (8083) and Billing Service (8084) to generate the invoice in real time."</em></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Section 5 -->
+    <h2>5. Which Services Are Used in Which Instance (Scenario)?</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 20%;">Scenario / Instance</th>
+                <th style="width: 25%;">Services Triggered & Ports</th>
+                <th style="width: 55%;">Technical Workflow Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>1. User Login</strong></td>
+                <td><code>API Gateway (8080)</code><br>&rarr; <code>Auth Service (8081)</code></td>
+                <td>Gateway forwards credentials to Auth Service. Auth Service verifies password via <strong>BCrypt</strong> and issues an <strong>HMAC-SHA256 signed JWT token</strong> embedding user ID and role claims.</td>
+            </tr>
+            <tr>
+                <td><strong>2. Bay Scheduling & Collision Test</strong></td>
+                <td><code>API Gateway (8080)</code><br>&rarr; <code>Booking Service (8082)</code></td>
+                <td>Gateway inspects JWT token, validates role, and routes to Booking Service. Booking Service checks bay calendar. If occupied, throws an exception mapped to <strong>HTTP 409 Conflict</strong>.</td>
+            </tr>
+            <tr>
+                <td><strong>3. Completing a Job (Multi-Service)</strong></td>
+                <td><code>API Gateway (8080)</code><br>&rarr; <code>Booking Service (8082)</code><br>&rarr; <code>Record Service (8083)</code><br>&rarr; <code>Billing Service (8084)</code></td>
+                <td><strong>Orchestrated Pipeline:</strong> Booking Service updates status to <code>COMPLETED</code>, dispatches an OpenFeign RPC call to <strong>Record Service</strong> to log diagnosis, and a second OpenFeign call to <strong>Billing Service</strong> to calculate tax and generate the invoice.</td>
+            </tr>
+            <tr>
+                <td><strong>4. Settling an Invoice ("Pay Now")</strong></td>
+                <td><code>API Gateway (8080)</code><br>&rarr; <code>Billing Service (8084)</code></td>
+                <td>Gateway routes request to Billing Service's <code>PUT /bills/{id}/pay</code> endpoint, updating invoice state from <code>PENDING</code> to <code>PAID</code>.</td>
+            </tr>
+            <tr>
+                <td><strong>Continuous (Heartbeat)</strong></td>
+                <td><code>Eureka Server (8761)</code> &harr; All Services</td>
+                <td>Every 30 seconds, all microservices send health heartbeats to Eureka so the Gateway and OpenFeign load-balance traffic without static IPs.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Section 6 -->
+    <h2>6. What Each Role Can Do on the Website</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 15%;">Role</th>
+                <th style="width: 20%;">Persona & Credentials</th>
+                <th style="width: 35%;">Permitted Capabilities</th>
+                <th style="width: 30%;">Enforced Restrictions (RBAC)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Customer</strong></td>
+                <td>Fleet Operations<br><code>customer</code> / <code>cust123</code></td>
+                <td>
+                    &bull; Schedule Bay appointments (select bay, vehicle, date)<br>
+                    &bull; Test Bay 1 Collision Simulator (HTTP 409 check)<br>
+                    &bull; Cancel pending bookings (releases bay)<br>
+                    &bull; View Vehicle History ledger<br>
+                    &bull; View Invoices & click <strong>"Pay Now"</strong> to settle bills
+                </td>
+                <td>
+                    <span class="tag-danger">&times; Cannot complete repair jobs</span><br>
+                    <span class="tag-danger">&times; Internal service mesh hidden</span><br>
+                    <span class="tag-danger">&times; Diagnostic notes entry hidden</span>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Technician</strong></td>
+                <td>Lead Mechanic<br><code>technician</code> / <code>tech123</code></td>
+                <td>
+                    &bull; View active Service Bay Queue<br>
+                    &bull; <strong>Complete Job (Core Feature):</strong> Open modal, enter labor ($), parts ($), diagnostics, preview 10% tax, submit &rarr; triggers OpenFeign pipeline<br>
+                    &bull; Review vehicle repair history
+                </td>
+                <td>
+                    <span class="tag-danger">&times; Invoices & Billing tab hidden</span> (confidentiality)<br>
+                    <span class="tag-danger">&times; Cannot cancel customer bookings</span><br>
+                    <span class="tag-danger">&times; Admin security inspector hidden</span>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Admin</strong></td>
+                <td>System Administrator<br><code>admin</code> / <code>admin123</code></td>
+                <td>
+                    &bull; <strong>Superuser (All 5 Tabs Unlocked):</strong><br>
+                    &bull; Schedule, Cancel, and Complete bookings<br>
+                    &bull; View organization-wide ledger & invoices<br>
+                    &bull; Inspect live Eureka Service Mesh topology<br>
+                    &bull; Live JWT Token & Claims Inspector
+                </td>
+                <td>
+                    <span class="tag-success">&check; Full Unrestricted Superuser Access</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Section 7 -->
+    <h2>7. Where to Find the Code in Spring Boot (Role & Task Code Reference)</h2>
+    <p>Open these exact files and methods in your IDE when faculty asks for the implementation:</p>
+
+    <h3>A. Customer Tasks</h3>
+    <ul>
+        <li><strong>Bay Scheduling & Collision Avoidance:</strong><br>
+            File: <code>booking-service/src/main/java/com/precisionauto/booking/service/BookingService.java</code><br>
+            Method: <code>public Booking scheduleBooking(BookingRequest request)</code><br>
+            Endpoint: <code>POST /bookings</code> in <code>BookingController.java</code>
+        </li>
+        <li><strong>Cancel Booking:</strong><br>
+            File: <code>booking-service/src/main/java/com/precisionauto/booking/controller/BookingController.java</code> &rarr; <code>PUT /bookings/{id}/cancel</code>
+        </li>
+        <li><strong>View Vehicle History:</strong><br>
+            File: <code>record-service/src/main/java/com/precisionauto/record/service/RecordService.java</code><br>
+            Method: <code>public List&lt;ServiceRecord&gt; getRecordsByVehicleId(String vehicleId)</code>
+        </li>
+        <li><strong>Pay Invoices:</strong><br>
+            File: <code>billing-service/src/main/java/com/precisionauto/billing/service/BillingService.java</code><br>
+            Method: <code>public Billing payBill(Long billId)</code> (sets status to <code>PAID</code>)
+        </li>
+    </ul>
+
+    <h3>B. Technician Tasks</h3>
+    <ul>
+        <li><strong>Complete Job & OpenFeign Orchestration:</strong><br>
+            File: <code>booking-service/src/main/java/com/precisionauto/booking/service/BookingService.java</code><br>
+            Method: <code>public CompleteBookingResponse completeBooking(Long id, CompleteBookingRequest req)</code><br>
+            Feign Interfaces: <code>RecordClient.java</code> (<code>@FeignClient(name = "record-service")</code>) and <code>BillingClient.java</code> (<code>@FeignClient(name = "billing-service")</code>)
+        </li>
+        <li><strong>Dynamic Invoicing Calculation (Labor + Parts + 10% Tax):</strong><br>
+            File: <code>billing-service/src/main/java/com/precisionauto/billing/service/BillingService.java</code><br>
+            Method: <code>public Billing generateBill(Billing billing)</code><br>
+            Logic: <code>subtotal = labor.add(parts); tax = subtotal.multiply(0.10); amount = subtotal.add(tax);</code>
+        </li>
+    </ul>
+
+    <h3>C. Security & Gateway Tasks</h3>
+    <ul>
+        <li><strong>JWT Token Generation & BCrypt Auth:</strong><br>
+            File: <code>auth-service/src/main/java/com/precisionauto/auth/service/AuthService.java</code> &rarr; <code>authenticate()</code><br>
+            Token Utility: <code>auth-service/src/main/java/com/precisionauto/auth/util/JwtUtil.java</code>
+        </li>
+        <li><strong>Gateway Route Filter & Token Interceptor:</strong><br>
+            File: <code>api-gateway/src/main/java/com/precisionauto/gateway/filter/JwtAuthenticationFilter.java</code><br>
+            Validates Bearer token, extracts claims, and mutates request with <code>X-User-Id</code> and <code>X-User-Role</code> headers.
+        </li>
+    </ul>
+
+    <!-- Section 8 -->
+    <h2>8. Collision Occurrence Code & Technical Implementation</h2>
+
+    <p><strong>1. Service Layer Implementation (Where the check happens):</strong></p>
+    <pre>
+// File: BookingService.java (Lines 44-51)
+List&lt;Booking&gt; collisions = bookingRepository.findByBayIdAndServiceDateAndStatusNot(
+        targetBay, serviceDate, "CANCELLED"
+);
+
+if (!collisions.isEmpty()) {
+    throw new IllegalStateException("Collision Detected: " + targetBay +
+            " is already booked for " + serviceDate + ". Please choose another bay or time.");
+}</pre>
+
+    <p><strong>2. Controller Layer Implementation (Mapping to HTTP 409 Conflict):</strong></p>
+    <pre>
+// File: BookingController.java (Lines 27-38)
+try {
+    Booking booking = bookingService.scheduleBooking(request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(booking);
+} catch (IllegalStateException e) {
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+            "status", 409,
+            "error", "Booking Collision",
+            "message", e.getMessage()
+    ));
+}</pre>
+
+    <p><strong>What have you used for it? (4 Key Technical Answers for Faculty):</strong></p>
+    <ol>
+        <li><strong>Spring Data JPA Derived Query:</strong> Used <code>findByBayIdAndServiceDateAndStatusNot(bayId, date, "CANCELLED")</code> in <code>BookingRepository</code> to query bay occupancy without writing raw SQL.</li>
+        <li><strong>REST Standard HTTP 409 Conflict:</strong> Returned <code>HttpStatus.CONFLICT (409)</code> instead of generic errors to signify that the request conflicts with current state of server resources.</li>
+        <li><strong>Java 21 Streams & Predicates:</strong> When a user leaves bay blank, Java Streams filter unoccupied bays from <code>ALL_BAYS = List.of("BAY-1", "BAY-2", "BAY-3")</code>.</li>
+        <li><strong>ACID Transaction Isolation:</strong> Annotated with <code>@Transactional</code> to prevent race conditions during concurrent bookings.</li>
+    </ol>
+
+    <!-- Section 9 -->
+    <h2>9. Cross-Device Access (Mobile / Other Laptop) & Review Check FAQ</h2>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: Can I access this website on another laptop or my mobile? Will faculty test that?</div>
+        <div class="faq-answer">
+            <p><strong>Will they check that?</strong> In standard university SOA / Microservices project evaluations, faculty primarily inspect your architecture, code implementation, and live functionality directly on your presentation laptop screen. However, faculty frequently ask: <em>"Can this web app be accessed by technicians on their phones or tablets in the workshop?"</em> or occasionally test it directly.</p>
+            <p><strong>Can you access it? YES, 100%!</strong> We have configured the frontend and microservices for seamless multi-device access:</p>
+            <ul>
+                <li><strong>Dynamic Host Resolution (<code>app.js</code>):</strong> The frontend detects <code>window.location.hostname</code> dynamically. When opened from a phone or another laptop, all REST requests automatically target <code>http://&lt;YOUR_LAPTOP_IP&gt;:8080/api</code> instead of failing on <code>localhost</code>.</li>
+                <li><strong>Global CORS Enabled:</strong> The Spring Cloud API Gateway (8080) has <code>globalcors</code> configured with <code>allowedOriginPatterns: "*"</code> and <code>DedupeResponseHeader</code>, permitting cross-origin mobile and browser requests.</li>
+                <li><strong>Responsive Mobile Design:</strong> <code>styles.css</code> includes media queries for devices down to 360px width with touch-friendly cards, buttons, and input fields.</li>
+            </ul>
+            <p><strong>Step-by-Step Instructions to Open on Mobile / Another Laptop:</strong></p>
+            <ol>
+                <li><strong>Network Setup (Important):</strong> Connect both your laptop and your mobile/second laptop to the <strong>same Wi-Fi network</strong> (or turn on your Mobile Hotspot on your phone and connect your laptop to it — this is the safest approach because university Wi-Fi often blocks peer-to-peer traffic via AP isolation).</li>
+                <li><strong>Start the Project:</strong> Run <code>START_PROJECT_FOR_REVIEW.bat</code> (or <code>open-website.bat</code>).</li>
+                <li><strong>Look at the Console:</strong> The frontend server console displays:
+                    <br><code>Mobile/Network: http://&lt;YOUR_IP&gt;:3000</code></li>
+                <li><strong>Open Browser on Phone/Other Laptop:</strong> Type <code>http://&lt;YOUR_IP&gt;:3000</code> in Chrome/Safari. The full high-tech portal will load and authenticate live!</li>
+            </ol>
+            <p><strong>What to say if Sir asks:</strong></p>
+            <p style="font-style: italic; color: #38bdf8; background: #0f172a; padding: 12px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                "Yes Sir! Our system is fully decoupled and headless. The Spring Cloud API Gateway exposes standard REST endpoints over HTTP/JSON with CORS enabled. The frontend is built with dynamic hostname resolution and responsive CSS. Workshop technicians on tablets, fleet drivers on smartphones, and admins on desktop workstations all connect seamlessly to the same centralized microservices mesh."
+            </p>
+        </div>
+    </div>
+
+    <!-- Section 10 -->
+    <h2>10. Public Worldwide Access Link (Cloudflare Edge Tunnel)</h2>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: How do I generate a public link that ANYONE in the world can open on their phone or laptop?</div>
+        <div class="faq-answer">
+            <p><strong>1-Click Solution:</strong> Double-click <code>START_PUBLIC_LINK.bat</code> in the project folder.</p>
+            <p><strong>What it does:</strong></p>
+            <ol>
+                <li>Establishes an encrypted, zero-trust edge tunnel via <strong>Cloudflare</strong> directly to your local web server.</li>
+                <li>Generates a globally accessible HTTPS link (e.g., <code>https://&lt;subdomain&gt;.trycloudflare.com</code>).</li>
+                <li>Automatically copies the link to your Windows clipboard so you can immediately paste it to Sir, WhatsApp, or email.</li>
+                <li>Automatically opens the link in your browser.</li>
+            </ol>
+            <p><strong>How the Architecture Works (Single-Origin Proxy):</strong></p>
+            <ul>
+                <li><code>frontend/server.js</code> acts as a high-performance <strong>API Reverse Proxy</strong>: it routes all <code>/api/*</code> requests directly to the Spring Cloud API Gateway (port 8080).</li>
+                <li>Because both frontend assets and backend API requests flow through the same public HTTPS origin, there are <strong>zero CORS errors</strong>, <strong>zero Mixed-Content security warnings</strong>, and <strong>zero router port forwarding required</strong>.</li>
+                <li>Anyone with the link (faculty in another city, on 4G/5G mobile, or on university guest Wi-Fi) can open it and test all features (login, booking, billing, diagnostics) live.</li>
+            </ul>
+            <p><strong>What to say to faculty if asked:</strong></p>
+            <p style="font-style: italic; color: #38bdf8; background: #0f172a; padding: 12px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                "Sir, our platform is designed for public cloud readiness. We have configured our Node gateway proxy to multiplex static assets and REST routes under a single origin. For this review, we route public ingress traffic through an encrypted Cloudflare Zero-Trust edge tunnel with valid SSL, allowing authorized clients worldwide to consume our microservices securely without exposing unencrypted internal service ports."
+            </p>
+        </div>
+    </div>
+
+    <!-- Section 11 -->
+    <h2>11. Multi-Factor Authentication (Email + Password + OTP) Security Architecture</h2>
+
+    <div class="faq-item">
+        <div class="faq-question">Q: How does the Email + Password + Mail OTP authentication work?</div>
+        <div class="faq-answer">
+            <p><strong>Review 2 Security Enhancement:</strong> To adhere to institutional Zero-Trust security guidelines, identity verification now uses email-based principal identification combined with mandatory email OTP verification before a signed JWT session is issued.</p>
+            <p><strong>Two-Step Verification Pipeline:</strong></p>
+            <ol>
+                <li><strong>Factor 1 (Email & Password Credentials):</strong> User submits their enterprise email (e.g., <code>customer@precisionauto.com</code>, <code>technician@precisionauto.com</code>, <code>admin@precisionauto.com</code>) and BCrypt-hashed password + Canvas CAPTCHA challenge.</li>
+                <li><strong>Factor 2 (Email OTP Token):</strong> Upon credential validation, <code>auth-service</code> dispatches a cryptographically random 6-digit one-time authorization code to the registered email address with a 120-second TTL.</li>
+                <li><strong>Verification & Session Issuance:</strong> User inputs the 6-digit code received in their email (or clicks the Auto-Fill from Mail button). The API Gateway issues the signed HMAC-SHA256 JWT bearer token granting dashboard access.</li>
+            </ol>
+            <p><strong>Backend Implementation:</strong></p>
+            <ul>
+                <li><code>UserRepository.java</code>: <code>findByEmail()</code> and <code>findByUsername()</code> derived queries.</li>
+                <li><code>AuthService.java</code>: <code>generateOtp(username)</code> and <code>verifyOtp(username, enteredOtp)</code> with concurrent expiration tracking.</li>
+                <li><code>AuthController.java</code>: <code>POST /auth/otp/send</code> and <code>POST /auth/otp/verify</code> REST endpoints.</li>
+                <li><code>server.js (Node / SMTP Engine)</code>: Integrated with Google SMTP (<code>smtp.gmail.com:587</code> TLS) to dispatch real, live verification emails directly to the user's inbox in real time.</li>
+            </ul>
+            <p><strong>What to say to Sir:</strong></p>
+            <p style="font-style: italic; color: #38bdf8; background: #0f172a; padding: 12px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+                "Sir, for Review 2 we upgraded our identity layer to use enterprise email credentials paired with Two-Factor Authentication (2FA). When a user submits their email and password, the API Gateway authenticates the principal and triggers an automated OTP dispatch to the user's email inbox. Only when the 6-digit email code is verified does the service mesh issue the signed JWT session, providing complete Zero-Trust protection."
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

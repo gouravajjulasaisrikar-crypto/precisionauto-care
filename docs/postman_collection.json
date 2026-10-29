@@ -1,0 +1,148 @@
+{
+  "info": {
+    "name": "PrecisionAuto Care Microservices API Suite",
+    "description": "Comprehensive Postman collection for testing JWT Auth, Service Bay Collision Elimination, Vehicle Service History, Dynamic Billing, and Gateway Routing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Authentication Service",
+      "item": [
+        {
+          "name": "Register Fleet Client",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"client_alpha\",\n  \"password\": \"pass123\",\n  \"email\": \"alpha@fleet.com\",\n  \"fullName\": \"Alpha Fleet Logistics\",\n  \"role\": \"ROLE_CUSTOMER\"\n}"
+            },
+            "url": "http://localhost:8080/api/auth/register"
+          }
+        },
+        {
+          "name": "Login (Acquire JWT)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"technician\",\n  \"password\": \"tech123\"\n}"
+            },
+            "url": "http://localhost:8080/api/auth/login"
+          }
+        },
+        {
+          "name": "Validate JWT Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": "http://localhost:8080/api/auth/validate"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Service Booking Service",
+      "item": [
+        {
+          "name": "Schedule Booking (Valid)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 3,\n  \"vehicleId\": \"FLT-555\",\n  \"serviceDate\": \"2026-10-20 11:00\",\n  \"bayId\": \"BAY-1\",\n  \"serviceType\": \"Brake Overhaul\",\n  \"notes\": \"Fleet vehicle driver noted pedal vibration\"\n}"
+            },
+            "url": "http://localhost:8080/api/bookings"
+          }
+        },
+        {
+          "name": "Trigger Booking Collision (HTTP 409 Expected)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 3,\n  \"vehicleId\": \"FLT-777\",\n  \"serviceDate\": \"2026-10-20 11:00\",\n  \"bayId\": \"BAY-1\",\n  \"serviceType\": \"Quick Lube\",\n  \"notes\": \"Collision test on same bay and time\"\n}"
+            },
+            "url": "http://localhost:8080/api/bookings"
+          }
+        },
+        {
+          "name": "List All Bookings",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "http://localhost:8080/api/bookings"
+          }
+        },
+        {
+          "name": "Complete Service (Inter-service Orchestration -> Record & Billing)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technicianId\": 2,\n  \"serviceDetails\": \"Replaced hydraulic brake lines and bled braking system.\",\n  \"partsReplaced\": \"OEM Brake lines, DOT 4 Fluid\",\n  \"laborCharge\": 180.00,\n  \"partsCharge\": 95.00,\n  \"invoiceDescription\": \"Fleet Brake Overhaul Service\"\n}"
+            },
+            "url": "http://localhost:8080/api/bookings/1/complete"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Service Record Service",
+      "item": [
+        {
+          "name": "Query Vehicle Service History",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "http://localhost:8080/api/records/vehicle/FLT-101"
+          }
+        },
+        {
+          "name": "List All Service Records",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "http://localhost:8080/api/records"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Billing Service",
+      "item": [
+        {
+          "name": "List Invoices",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "http://localhost:8080/api/bills"
+          }
+        },
+        {
+          "name": "Settle / Pay Invoice",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+            "url": "http://localhost:8080/api/bills/1/pay"
+          }
+        }
+      ]
+    }
+  ]
+}

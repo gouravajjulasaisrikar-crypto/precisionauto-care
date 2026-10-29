@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrecisionAuto Care &bull; Fleet Maintenance & Service Operations Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Floating Toast Notification Shelf -->
+    <div id="toast-shelf"></div>
+
+    <!-- STANDALONE LOGIN PORTAL (First & only screen visible before sign-in) -->
+    <div id="login-screen" class="login-screen-wrapper">
+        <div class="login-container">
+            <!-- Brand Header -->
+            <div class="login-brand-header">
+                <div class="login-brand-badge">
+                    <svg class="svg-icon xl" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 11.2 2 11.6 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+                </div>
+                <h2>PrecisionAuto Care</h2>
+                <p>Enterprise Automotive Fleet Operations & Microservices Platform</p>
+                <div class="login-security-tag">
+                    <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Zero-Trust Identity Gateway &bull; Port 8080</span>
+                </div>
+                <button type="button" class="cloud-backend-pill" onclick="openBackendModal()" title="Configure Railway Cloud Gateway" style="margin-top: 0.65rem;">
+                    <span class="cloud-dot" id="login-cloud-dot"></span>
+                    <span id="login-cloud-label">Cloud Backend (Railway)</span>
+                </button>
+            </div>
+
+            <div class="login-grid">
+                <!-- Left Column: Quick Profile Selection -->
+                <div class="glass-card login-persona-card">
+                    <div class="glass-card-header">
+                        <h3>
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            Enterprise Directory Accounts
+                        </h3>
+                        <span class="badge-tag info">Select Profile</span>
+                    </div>
+                    <p class="subtitle">Select an enterprise directory profile to populate its principal ID, then enter your authorized credentials:</p>
+                    
+                    <div class="persona-selection-list">
+                        <button type="button" class="persona-btn" id="persona-customer" onclick="selectPersona('customer@precisionauto.com', 'John Miller (Commercial Fleet)', 'ROLE_CUSTOMER')">
+                            <div class="persona-icon-box">
+                                <svg class="svg-icon lg" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="12" y1="6" x2="12.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="12" y1="10" x2="12.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/></svg>
+                            </div>
+                            <div class="persona-text">
+                                <strong>Commercial Fleet Operations</strong>
+                                <small>Email: <code>customer@precisionauto.com</code> &bull; Corporate Client</small>
+                                <span class="persona-privilege">Service Bay Allocation &bull; Invoicing Settlement &bull; Maintenance Audit</span>
+                            </div>
+                            <span class="persona-badge">ROLE_CUSTOMER</span>
+                        </button>
+
+                        <button type="button" class="persona-btn" id="persona-technician" onclick="selectPersona('technician@precisionauto.com', 'Alex Mercer (Lead Diagnostics)', 'ROLE_TECHNICIAN')">
+                            <div class="persona-icon-box">
+                                <svg class="svg-icon lg" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                            </div>
+                            <div class="persona-text">
+                                <strong>Master Workshop Engineering</strong>
+                                <small>Email: <code>technician@precisionauto.com</code> &bull; Certified Specialist</small>
+                                <span class="persona-privilege">Bay Queue &bull; Repair Diagnostics &bull; Feign Job Finalization</span>
+                            </div>
+                            <span class="persona-badge">ROLE_TECHNICIAN</span>
+                        </button>
+
+                        <button type="button" class="persona-btn" id="persona-admin" onclick="selectPersona('admin@precisionauto.com', 'Sarah Jenkins (System Admin)', 'ROLE_ADMIN')">
+                            <div class="persona-icon-box">
+                                <svg class="svg-icon lg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <div class="persona-text">
+                                <strong>Enterprise Infrastructure & Security</strong>
+                                <small>Email: <code>admin@precisionauto.com</code> &bull; System Superuser</small>
+                                <span class="persona-privilege">Service Mesh &bull; Eureka Registry &bull; System Governance</span>
+                            </div>
+                            <span class="persona-badge">ROLE_ADMIN</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Secure Credential Authentication -->
+                <div class="glass-card login-form-card">
+                    <div class="glass-card-header">
+                        <h3>
+                            <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Credential Authentication
+                        </h3>
+                        <span class="badge-tag success">BCrypt Protected</span>
+                    </div>
+                    
+                    <div class="security-badges-banner">
+                        <span class="security-badge">HMAC-SHA256 Signed</span>
+                        <span class="security-badge green">BCrypt Cost 12</span>
+                        <span class="security-badge amber">Brute-Force Guard</span>
+                        <span class="security-badge purple">Anti-Bot Shield</span>
+                    </div>
+
+                    <form id="manual-login-form" class="form-layout" onsubmit="handleManualLogin(event)">
+                        <!-- Profile Selection Callout (NO PASSWORDS EXPOSED) -->
+                        <div id="selected-profile-callout" class="selected-profile-callout" style="display: none;">
+                            <span class="callout-icon" id="callout-icon">
+                                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </span>
+                            <div class="callout-details">
+                                <strong id="callout-name">Profile Selected</strong>
+                                <small id="callout-hint">Enterprise identity confirmed. Enter authorized password and complete security verification.</small>
+                            </div>
+                            <span class="badge-tag info" id="callout-role">ROLE</span>
+                        </div>
+
+                        <div class="form-field">
+                            <label>
+                                <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                <span>Enterprise Email Address</span>
+                            </label>
+                            <input type="text" id="login-username" class="form-input" required placeholder="Enter registered email or username..." autocomplete="username email">
+                        </div>
+                        
+                        <div class="form-field">
+                            <label>Account Password</label>
+                            <div class="password-input-container">
+                                <input type="password" id="login-password" class="form-input" required placeholder="Enter authorized password..." value="" oninput="evaluatePasswordStrength(this.value)" autocomplete="current-password">
+                                <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility()" title="Toggle password visibility">
+                                    <svg class="svg-icon eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </button>
+                            </div>
+                            <div class="strength-meter-wrap">
+                                <div class="strength-meter-track">
+                                    <div id="password-strength-fill" class="strength-meter-fill"></div>
+                                </div>
+                                <div class="strength-meter-label">
+                                    <span>Entropy Score:</span>
+                                    <span id="password-strength-text" style="color: var(--text-muted);">Empty</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CAPTCHA Verification Module -->
+                        <div class="captcha-container">
+                            <div class="captcha-header">
+                                <label>
+                                    <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                    <span>Security Verification Challenge</span>
+                                </label>
+                                <span class="captcha-status-badge" id="captcha-status-label">Case-insensitive</span>
+                            </div>
+                            <div class="captcha-visual-row">
+                                <div class="captcha-canvas-wrap" title="Security verification challenge code">
+                                    <canvas id="captcha-canvas" width="160" height="42"></canvas>
+                                </div>
+                                <button type="button" class="captcha-refresh-btn" onclick="generateCaptcha()" title="Generate new security code">
+                                    <svg class="svg-icon spin-on-hover" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                                </button>
+                                <div class="captcha-input-wrap">
+                                    <input type="text" id="login-captcha" class="form-input" placeholder="Enter code" required autocomplete="off" maxlength="5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="lockout-banner" class="lockout-banner">
+                            <svg class="svg-icon" viewBox="0 0 24 24" style="color: var(--danger);"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            <span><strong>Brute-Force Guard Engaged:</strong> Consecutive failed attempts detected. Authentication throttled for <span id="lockout-countdown">30</span>s.</span>
+                        </div>
+
+                        <button type="submit" id="login-submit-btn" class="btn-luxury btn-luxury-primary">
+                            <span>Authenticate via Gateway (Port 8080)</span>
+                            <svg class="svg-icon sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TWO-FACTOR AUTHENTICATION (OTP 2FA) VERIFICATION MODAL -->
+    <div id="otp-modal" class="modal-overlay" style="display: none;">
+        <div class="glass-card otp-modal-card">
+            <div class="otp-modal-header">
+                <div class="otp-shield-badge">
+                    <svg class="svg-icon lg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3>Two-Factor Authentication (2FA)</h3>
+                <p>Enterprise Zero-Trust Security Verification</p>
+            </div>
+
+            <div class="otp-info-box">
+                <div class="otp-user-badge">
+                    <span class="otp-avatar-icon">
+                        <svg class="svg-icon md" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </span>
+                    <div>
+                        <strong id="otp-user-name">John Miller</strong>
+                        <small id="otp-user-channel">Security Code Dispatched to: customer@precisionauto.com</small>
+                    </div>
+                </div>
+
+                <!-- LIVE INBOX DISPATCH CARD -->
+                <div class="otp-mail-inbox-preview" id="otp-mail-inbox-preview">
+                    <div class="mail-header-row">
+                        <span class="mail-badge">
+                            <span class="pulse-dot"></span>
+                            <span>Mail Dispatched</span>
+                        </span>
+                        <a href="https://mail.google.com" target="_blank" class="mail-open-link" title="Open Gmail in new tab">
+                            <span>Open Gmail</span>
+                            <svg class="svg-icon xs" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        </a>
+                    </div>
+                    <div class="mail-body-preview">
+                        <div class="mail-from-to">
+                            <span>From: <code>security-mesh@precisionauto.com</code></span>
+                            <span id="mail-to-recipient">To: <code>customer@precisionauto.com</code></span>
+                        </div>
+                        <div class="mail-subject">Subject: <strong>PrecisionAuto Care &bull; 2FA Authorization Security Code</strong></div>
+                        <div class="mail-content-snippet">
+                            Your 6-digit one-time authorization code is:
+                            <span class="mail-otp-badge" id="mail-otp-badge">------</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="otp-hint-banner">
+                    <div class="otp-hint-text">
+                        <span>Code from Email:</span>
+                        <strong id="otp-code-display" class="otp-code-highlight">------</strong>
+                    </div>
+                    <button type="button" class="btn-chip" onclick="autoFillOtp()" title="Click to auto-fill code">
+                        <svg class="svg-icon xs" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Auto-Fill from Mail</span>
+                    </button>
+                </div>
+            </div>
+
+            <form id="otp-form" onsubmit="handleOtpSubmit(event)">
+                <div class="otp-digits-wrapper">
+                    <label>Enter 6-Digit Security Token</label>
+                    <div class="otp-inputs-row" id="otp-inputs-container">
+                        <input type="text" class="otp-digit-input" maxlength="1" data-index="0" inputmode="numeric" autocomplete="one-time-code" autofocus>
+                        <input type="text" class="otp-digit-input" maxlength="1" data-index="1" inputmode="numeric">
+                        <input type="text" class="otp-digit-input" maxlength="1" data-index="2" inputmode="numeric">
+                        <input type="text" class="otp-digit-input" maxlength="1" data-index="3" inputmode="numeric">
+                        <input type="text" class="otp-digit-input" maxlength="1" data-index="4" inputmode="numeric">
+                        <input type="text" class="otp-digit-input" maxlength="1" data-index="5" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="otp-countdown-row">
+                    <span id="otp-timer-text">Code expires in <strong id="otp-seconds">120</strong>s</span>
+                    <button type="button" id="otp-resend-btn" class="link-btn" onclick="resendOtp()">Resend Code</button>
+                </div>
+
+                <div class="otp-actions-row">
+                    <button type="button" class="btn-luxury btn-luxury-outline" onclick="closeOtpModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" id="otp-verify-btn" class="btn-luxury btn-luxury-primary">
+                        <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        <span>Verify & Authorize JWT</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- AUTHENTICATED APPLICATION DASHBOARD (Visible ONLY after sign-in) -->
+    <div id="app-dashboard" style="display: none;">
+        <!-- Top Navigation Bar -->
+        <header class="navbar">
+            <div class="nav-brand">
+                <div class="logo-badge">
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 11.2 2 11.6 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+                </div>
+                <div class="brand-text">
+                    <h1>PrecisionAuto Care</h1>
+                    <p>Fleet Operations & Service Orchestration Platform</p>
+                </div>
+            </div>
+            
+            <div class="nav-controls">
+                <button type="button" class="cloud-backend-pill" onclick="openBackendModal()" title="Configure Railway Cloud Gateway">
+                    <span class="cloud-dot" id="dash-cloud-dot"></span>
+                    <span id="dash-cloud-label">Cloud Backend</span>
+                </button>
+
+                <div class="gateway-chip" id="mesh-health-chip">
+                    <span class="pulse-dot"></span>
+                    <span id="gateway-status-text">Gateway Online :8080</span>
+                </div>
+                
+                <div class="user-profile-badge" id="user-badge">
+                    <div class="profile-avatar">
+                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="profile-details">
+                        <span class="profile-name" id="current-user-name">Guest</span>
+                        <span class="profile-role-tag" id="current-user-role">Unauthenticated</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-luxury btn-luxury-outline btn-sm" onclick="logout()" title="Sign out and return to login portal">
+                    <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="app-container">
+            <!-- Sidebar Navigation (Role-Filtered) -->
+            <aside class="sidebar">
+                <nav class="nav-links">
+                    <button class="nav-btn active" id="btn-booking-tab" onclick="switchTab('booking-tab')">
+                        <span class="btn-icon">
+                            <svg class="svg-icon sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </span>
+                        <span>Bay Scheduling</span>
+                    </button>
+                    <button class="nav-btn" id="btn-records-tab" onclick="switchTab('records-tab')">
+                        <span class="btn-icon">
+                            <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        </span>
+                        <span>Vehicle History</span>
+                    </button>
+                    <button class="nav-btn" id="btn-billing-tab" onclick="switchTab('billing-tab')">
+                        <span class="btn-icon">
+                            <svg class="svg-icon sm" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        </span>
+                        <span>Invoices & Billing</span>
+                    </button>
+                    <button class="nav-btn" id="btn-eureka-tab" onclick="switchTab('eureka-tab')">
+                        <span class="btn-icon">
+                            <svg class="svg-icon sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        </span>
+                        <span>Service Mesh</span>
+                    </button>
+                    <button class="nav-btn" id="btn-security-tab" onclick="switchTab('security-tab')">
+                        <span class="btn-icon">
+                            <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </span>
+                        <span>Token Inspector</span>
+                    </button>
+                </nav>
+
+                <div class="sidebar-stats-card">
+                    <strong>Spring Cloud Microservices</strong>
+                    <p>Java 21 LTS &bull; Eureka Discovery &bull; OpenFeign RPC &bull; Netty Gateway</p>
+                </div>
+            </aside>
+
+            <!-- Main Viewport -->
+            <main class="main-viewport">
+                
+                <!-- Global Metric Statistics Row -->
+                <div class="stats-banner">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg class="svg-icon lg" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-vehicles">12 Active</h3>
+                            <span>Fleet Vehicles</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg class="svg-icon lg" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3>3 Bays</h3>
+                            <span>100% Collision-Free</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg class="svg-icon lg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-records">3 Records</h3>
+                            <span>Ledger Entries</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg class="svg-icon lg" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-revenue">$1,095</h3>
+                            <span>Invoiced Volume</span>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- TAB 2: BOOKING & BAYS -->
+            <section id="booking-tab" class="tab-pane">
+                <div class="view-header">
+                    <h2>Service Bay Scheduling & Collision Elimination</h2>
+                    <p>Real-time concurrency validation preventing service bay double-booking</p>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Schedule Form -->
+                    <div class="glass-card">
+                        <div class="glass-card-header">
+                            <h3>
+                                <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                <span>Schedule Bay Appointment</span>
+                            </h3>
+                        </div>
+                        <p class="subtitle">Reserve a dedicated physical bay for fleet maintenance:</p>
+                        <form id="booking-form" class="form-layout" onsubmit="handleScheduleBooking(event)">
+                            <div class="form-row-2">
+                                <div class="form-field">
+                                    <label>Vehicle Fleet ID</label>
+                                    <input type="text" id="book-vehicle" class="form-input" required value="FLT-101" placeholder="e.g. FLT-101">
+                                </div>
+                                <div class="form-field">
+                                    <label>Service Date & Time</label>
+                                    <input type="text" id="book-date" class="form-input" required value="2026-10-15 10:00" placeholder="YYYY-MM-DD HH:mm">
+                                </div>
+                            </div>
+                            <div class="form-row-2">
+                                <div class="form-field">
+                                    <label>Service Bay</label>
+                                    <select id="book-bay" class="form-select">
+                                        <option value="">Auto-Assign First Available Bay</option>
+                                        <option value="BAY-1">Bay 1 - Heavy Hydraulic Lift</option>
+                                        <option value="BAY-2">Bay 2 - Alignment & Diagnostics</option>
+                                        <option value="BAY-3">Bay 3 - Express Lube Bay</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label>Service Type</label>
+                                    <select id="book-type" class="form-select">
+                                        <option>Fleet Preventive Inspection</option>
+                                        <option>Brake Rotor & Pad Overhaul</option>
+                                        <option>Transmission Diagnostic & Flush</option>
+                                        <option>Engine Tune-up & Spark Plugs</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <label>Operational Notes</label>
+                                <input type="text" id="book-notes" class="form-input" placeholder="Driver noted pedal vibration under braking">
+                            </div>
+                            <button type="submit" class="btn-luxury btn-luxury-primary">
+                                <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                <span>Verify Collision & Confirm Reservation</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Collision Simulator -->
+                    <div class="glass-card">
+                        <div class="glass-card-header">
+                            <h3>
+                                <svg class="svg-icon" viewBox="0 0 24 24" style="color: var(--warning);"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                <span>Collision Elimination Testing</span>
+                            </h3>
+                            <span class="badge-tag warning">Rubric 1 & 2 Verification</span>
+                        </div>
+                        <div class="simulator-pane">
+                            <p>Verify that overlapping requests targeting the same physical bay and time window are atomically blocked with <code>HTTP 409 Conflict</code>.</p>
+                            <p><strong>Scenario:</strong> <code>BAY-1</code> is already scheduled at <code>2026-10-15 10:00</code>. Trigger a collision request:</p>
+                            
+                            <button type="button" class="btn-luxury btn-luxury-warning" onclick="triggerCollisionSimulation()">
+                                <svg class="svg-icon sm" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                <span>Trigger Simulated Collision Test</span>
+                            </button>
+
+                            <div id="collision-banner" class="collision-banner"></div>
+                        </div>
+                    </div>
+
+                    <!-- Bookings Table -->
+                    <div class="glass-card full-col">
+                        <div class="glass-card-header">
+                            <h3>Active Garage Bookings</h3>
+                            <button class="btn-luxury btn-luxury-outline btn-sm" onclick="loadBookings()">
+                                <svg class="svg-icon sm spin-on-hover" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                                <span>Refresh</span>
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="luxury-table">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Vehicle ID</th>
+                                        <th>Date & Slot</th>
+                                        <th>Allocated Bay</th>
+                                        <th>Service Type</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookings-table-body">
+                                    <tr><td colspan="7" class="text-center">Loading bookings...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: VEHICLE RECORDS -->
+            <section id="records-tab" class="tab-pane">
+                <div class="view-header">
+                    <h2>Vehicle Service & Repair History</h2>
+                    <p>Centralized, immutable maintenance ledger indexed by vehicle fleet ID</p>
+                </div>
+
+                <div class="glass-card full-col">
+                    <div class="glass-card-header">
+                        <h3>Vehicle History Search</h3>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <input type="text" id="search-vehicle-input" class="form-input" style="width: 260px;" value="FLT-101" placeholder="e.g. FLT-101">
+                            <button class="btn-luxury btn-luxury-primary btn-sm" onclick="searchVehicleRecords()">Search History</button>
+                            <button class="btn-luxury btn-luxury-outline btn-sm" onclick="loadAllRecords()">View All</button>
+                        </div>
+                    </div>
+                    <div id="records-timeline-container" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                        <p class="text-center" style="color: var(--text-muted);">Loading maintenance records...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: BILLING & INVOICING -->
+            <section id="billing-tab" class="tab-pane">
+                <div class="view-header">
+                    <h2>Dynamic Invoicing & Billing Operations</h2>
+                    <p>Automated tariff computation (labor + parts + 10% tax) triggered upon service completion</p>
+                </div>
+
+                <div class="glass-card full-col">
+                    <div class="glass-card-header">
+                        <h3>Generated Invoices</h3>
+                        <button class="btn-luxury btn-luxury-outline btn-sm" onclick="loadBills()">
+                            <svg class="svg-icon sm spin-on-hover" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                            <span>Refresh Invoices</span>
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="luxury-table">
+                            <thead>
+                                <tr>
+                                    <th>Bill #</th>
+                                    <th>Booking Ref</th>
+                                    <th>Vehicle ID</th>
+                                    <th>Labor ($)</th>
+                                    <th>Parts ($)</th>
+                                    <th>Tax (10%)</th>
+                                    <th>Total Payable</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bills-table-body">
+                                <tr><td colspan="9" class="text-center">Loading invoices...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: SERVICE MESH TOPOLOGY -->
+            <section id="eureka-tab" class="tab-pane">
+                <div class="view-header">
+                    <h2>Service Mesh & Discovery Topology</h2>
+                    <p>Spring Cloud Netflix Eureka service registry & client-side load balancing</p>
+                </div>
+
+                <div class="topology-grid">
+                    <div class="mesh-node">
+                        <div class="node-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>
+                        </div>
+                        <h4>EUREKA-SERVER</h4>
+                        <p>Port: 8761</p>
+                        <span class="badge-tag success">Registry Host</span>
+                    </div>
+                    <div class="mesh-node">
+                        <div class="node-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h4>API-GATEWAY</h4>
+                        <p>Port: 8080</p>
+                        <span class="badge-tag success">Unified Ingress</span>
+                    </div>
+                    <div class="mesh-node">
+                        <div class="node-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        </div>
+                        <h4>AUTH-SERVICE</h4>
+                        <p>Port: 8081</p>
+                        <span class="badge-tag success">Discovery UP</span>
+                    </div>
+                    <div class="mesh-node">
+                        <div class="node-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </div>
+                        <h4>BOOKING-SERVICE</h4>
+                        <p>Port: 8082</p>
+                        <span class="badge-tag success">Discovery UP</span>
+                    </div>
+                    <div class="mesh-node">
+                        <div class="node-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                        </div>
+                        <h4>RECORD-SERVICE</h4>
+                        <p>Port: 8083</p>
+                        <span class="badge-tag success">Discovery UP</span>
+                    </div>
+                    <div class="mesh-node">
+                        <div class="node-icon">
+                            <svg class="svg-icon" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                        </div>
+                        <h4>BILLING-SERVICE</h4>
+                        <p>Port: 8084</p>
+                        <span class="badge-tag success">Discovery UP</span>
+                    </div>
+                </div>
+
+                <div class="glass-card full-col" style="margin-top: 1.5rem;">
+                    <h3>Orchestration Data Flow</h3>
+                    <div style="background: rgba(15, 23, 42, 0.9); padding: 1.25rem; border-radius: 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #38bdf8; margin-top: 1rem; line-height: 1.6;">
+                        1. Client Request &rarr; API Gateway (Port 8080)<br>
+                        2. Gateway executes JwtAuthenticationFilter &rarr; Extracts claims (userId, role) &rarr; Injects X-User-* headers<br>
+                        3. Gateway load-balances to Booking Service (lb://booking-service:8082)<br>
+                        4. Upon service completion &rarr; Booking Service invokes OpenFeign clients:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&bull; RecordClient &rarr; lb://record-service (Port 8083) : Logs immutable maintenance record<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&bull; BillingClient &rarr; lb://billing-service (Port 8084) : Generates dynamic invoice with 10% tax<br>
+                        5. Atomic response returned to Client
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: TOKEN & SECURITY INSPECTOR (Admin & Security Audit) -->
+            <section id="security-tab" class="tab-pane">
+                <div class="view-header">
+                    <h2>
+                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <span>JWT Identity & Security Inspector</span>
+                    </h2>
+                    <p>Cryptographically signed HMAC-SHA256 tokens with verified role claims</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="glass-card full-col">
+                        <div class="glass-card-header">
+                            <h3>
+                                <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <span>Active Bearer Token & Decoded Claims</span>
+                            </h3>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button type="button" class="btn-luxury btn-luxury-outline btn-sm" onclick="toggleTokenMask()">
+                                    <svg class="svg-icon sm" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                    <span>Mask</span>
+                                </button>
+                                <button type="button" class="btn-luxury btn-luxury-outline btn-sm" onclick="copyToken()">
+                                    <svg class="svg-icon sm" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                    <span>Copy</span>
+                                </button>
+                                <button type="button" class="btn-luxury btn-luxury-outline btn-sm" style="color: #f87171;" onclick="logout()">
+                                    <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                    <span>Sign Out</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="subtitle">Cryptographic token issued by auth-service and validated by api-gateway:</p>
+                        
+                        <div class="form-field">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                                <label style="margin: 0;">Raw Signed Token (RFC 7519)</label>
+                                <small id="session-expiry-timer" style="color: #34d399; font-weight: 700;">● Active (24h validity)</small>
+                            </div>
+                            <textarea id="jwt-token-box" class="token-editor" readonly placeholder="Sign in to generate token..."></textarea>
+                        </div>
+
+                        <div class="claims-pill-grid">
+                            <div class="claim-pill">
+                                <span class="label">Subject (User)</span>
+                                <strong id="token-sub">-</strong>
+                            </div>
+                            <div class="claim-pill">
+                                <span class="label">Database ID</span>
+                                <strong id="token-id">-</strong>
+                            </div>
+                            <div class="claim-pill">
+                                <span class="label">Granted Authority</span>
+                                <strong id="token-role">-</strong>
+                            </div>
+                            <div class="claim-pill">
+                                <span class="label">Client Email</span>
+                                <strong id="token-email">-</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div> <!-- /#app-dashboard -->
+
+    <!-- Complete Service Modal -->
+    <div id="complete-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Finalize Service & Trigger Invoicing</h3>
+                <button type="button" class="modal-close-btn" onclick="closeCompleteModal()">&times;</button>
+            </div>
+            <form id="complete-modal-form" class="form-layout" onsubmit="submitCompleteService(event)">
+                <input type="hidden" id="modal-booking-id">
+                <input type="hidden" id="modal-vehicle-id">
+                
+                <div class="form-field">
+                    <label>Technician ID</label>
+                    <input type="number" id="modal-tech-id" class="form-input" value="2" required>
+                </div>
+                <div class="form-field">
+                    <label>Diagnostics & Service Summary</label>
+                    <textarea id="modal-details" class="form-textarea" rows="2" required></textarea>
+                </div>
+                <div class="form-field">
+                    <label>Parts Replaced</label>
+                    <input type="text" id="modal-parts" class="form-input" value="Brembo Front Rotors, DOT 4 Fluid">
+                </div>
+                <div class="form-row-2">
+                    <div class="form-field">
+                        <label>Labor Charge ($)</label>
+                        <input type="number" id="modal-labor" class="form-input" step="0.01" value="150.00" oninput="updateCostPreview()" required>
+                    </div>
+                    <div class="form-field">
+                        <label>Parts Charge ($)</label>
+                        <input type="number" id="modal-parts-cost" class="form-input" step="0.01" value="180.00" oninput="updateCostPreview()" required>
+                    </div>
+                </div>
+
+                <div class="cost-preview-box">
+                    <div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted); display: block;">DYNAMIC TOTAL (INC. 10% TAX)</span>
+                        <small style="color: var(--text-secondary);">Subtotal: $<span id="modal-subtotal-text">330.00</span> + Tax: $<span id="modal-tax-text">33.00</span></small>
+                    </div>
+                    <strong>$<span id="modal-total-text">363.00</span></strong>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+                    <button type="button" class="btn-luxury btn-luxury-outline" onclick="closeCompleteModal()">Cancel</button>
+                    <button type="submit" class="btn-luxury btn-luxury-primary">Complete & Trigger Billing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CLOUD BACKEND (RAILWAY) CONFIGURATION MODAL -->
+    <div id="backend-modal" class="modal-overlay" style="display: none;">
+        <div class="glass-card modal-card" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3>
+                    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+                    <span>Railway Cloud Backend Mesh</span>
+                </h3>
+                <button type="button" class="modal-close-btn" onclick="closeBackendModal()">&times;</button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                Connect this Vercel frontend directly to your live Spring Boot microservices mesh deployed on Railway:
+            </p>
+            <div class="form-field" style="margin-bottom: 1rem;">
+                <label>Railway API Gateway URL</label>
+                <input type="url" id="backend-url-input" class="form-input" placeholder="https://your-backend.up.railway.app">
+                <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.35rem; display: block;">Leave blank to use default relative <code>/api</code> routing</small>
+            </div>
+            <div id="backend-test-result" style="padding: 0.6rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem; display: none;"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                <button type="button" class="btn-luxury btn-luxury-outline" onclick="testBackendConnection()">Test Ping</button>
+                <button type="button" class="btn-luxury btn-luxury-primary" onclick="saveBackendUrlSetting()">Save & Connect</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
