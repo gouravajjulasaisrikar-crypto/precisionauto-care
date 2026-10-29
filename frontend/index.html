@@ -28,9 +28,9 @@
                     <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                     <span>Zero-Trust Identity Gateway &bull; Port 8080</span>
                 </div>
-                <button type="button" class="cloud-backend-pill" onclick="openBackendModal()" title="Configure Railway Cloud Gateway" style="margin-top: 0.65rem;">
+                <button type="button" class="cloud-backend-pill" onclick="openBackendModal()" title="Configure Cloud Gateway Backend" style="margin-top: 0.65rem;">
                     <span class="cloud-dot" id="login-cloud-dot"></span>
-                    <span id="login-cloud-label">Cloud Backend (Railway)</span>
+                    <span id="login-cloud-label">Cloud Backend</span>
                 </button>
             </div>
 
@@ -758,23 +758,23 @@
         </div>
     </div>
 
-    <!-- CLOUD BACKEND (RAILWAY) CONFIGURATION MODAL -->
+    <!-- CLOUD BACKEND CONFIGURATION MODAL -->
     <div id="backend-modal" class="modal-overlay" style="display: none;">
-        <div class="glass-card modal-card" style="max-width: 480px;">
+        <div class="glass-card modal-card" style="max-width: 500px;">
             <div class="modal-header">
                 <h3>
                     <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-                    <span>Railway Cloud Backend Mesh</span>
+                    <span>Cloud Gateway Backend Mesh</span>
                 </h3>
                 <button type="button" class="modal-close-btn" onclick="closeBackendModal()">&times;</button>
             </div>
             <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-                Connect this Vercel frontend directly to your live Spring Boot microservices mesh deployed on Railway:
+                Connect this Vercel frontend directly to your live Spring Boot microservices mesh (Render, Railway, or Live Tunnel):
             </p>
             <div class="form-field" style="margin-bottom: 1rem;">
-                <label>Railway API Gateway URL</label>
-                <input type="url" id="backend-url-input" class="form-input" placeholder="https://your-backend.up.railway.app">
-                <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.35rem; display: block;">Leave blank to use default relative <code>/api</code> routing</small>
+                <label>API Gateway Live URL</label>
+                <input type="url" id="backend-url-input" class="form-input" placeholder="https://precisionauto-backend.onrender.com">
+                <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.35rem; display: block;">Supports Render, Railway, Koyeb, or LocalTunnel / ngrok</small>
             </div>
             <div id="backend-test-result" style="padding: 0.6rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.8rem; margin-bottom: 1rem; display: none;"></div>
             <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">

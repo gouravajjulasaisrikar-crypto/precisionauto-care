@@ -1583,7 +1583,7 @@ async function testBackendConnection() {
     } catch (err) {
         resBox.style.background = 'rgba(239, 68, 68, 0.2)';
         resBox.style.color = '#f87171';
-        resBox.innerHTML = `Connection Failed: Could not reach <code>${pingTarget}</code>. Ensure the Railway service is deployed and running.`;
+        resBox.innerHTML = `Connection Failed: Could not reach <code>${pingTarget}</code>. Ensure the backend service is deployed and running.`;
     }
 }
 
@@ -1594,7 +1594,7 @@ function saveBackendUrlSetting() {
     if (cleanUrl) {
         localStorage.setItem('pa_cloud_backend', cleanUrl);
         GATEWAY_URL = `${cleanUrl}/api`;
-        showToast('Backend Saved', `Connected to Railway: ${cleanUrl}`, 'success');
+        showToast('Backend Saved', `Connected to Gateway: ${cleanUrl}`, 'success');
         updateBackendPillStatus(true, cleanUrl);
     } else {
         localStorage.removeItem('pa_cloud_backend');
