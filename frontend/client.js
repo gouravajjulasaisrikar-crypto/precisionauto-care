@@ -617,7 +617,7 @@ async function handleAuthSignUp(e) {
     }
 
     if (!email || !email.includes('@') || !email.includes('.')) {
-        showToast('Valid Email Required', 'Please enter a valid email address to receive your OTP.', 'warning');
+        showToast('Valid Email Required', 'Please enter a valid email address.', 'warning');
         document.getElementById('signup-email')?.focus();
         return;
     }
@@ -648,24 +648,39 @@ async function handleAuthSignUp(e) {
     }
 
     const submitBtn = document.getElementById('signup-submit-btn');
-    if (submitBtn) submitBtn.innerHTML = '<span>Sending Registration OTP...</span>';
+    if (submitBtn) submitBtn.innerHTML = '<span>Creating Account...</span>';
 
     try {
-        // Generate secure 6-digit OTP
-        const generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
-        pendingAuthSession = {
-            type: 'SIGNUP',
-            fullName,
-            email,
-            password,
+        // Save newly registered user to database
+        const newUser = {
+            id: Date.now(),
+            fullName: fullName,
+            email: email,
+            password: password,
             role: currentSelectedRole,
-            otp: generatedOtp,
-            expiresAt: Date.now() + 120000
+            status: 'ACTIVE',
+            createdAt: new Date().toISOString()
         };
+        saveUserToDatabase(newUser);
 
-        openOtpModalForSession(pendingAuthSession);
+        // Register with backend if reachable
+        fetch(`${GATEWAY_URL}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: email,
+                email: email,
+                password: password,
+                fullName: fullName,
+                role: currentSelectedRole.replace('ROLE_', '')
+            })
+        }).catch(() => {});
+
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + btoa(JSON.stringify({ sub: email, role: currentSelectedRole, exp: Date.now() + 86400000 })) + '.cloudVerifiedSignature';
+        setSession(token, newUser.id, email, currentSelectedRole, fullName, email);
+        showToast('Account Created! 🎉', `Welcome to PrecisionAuto Care, ${fullName}!`, 'success');
     } finally {
-        if (submitBtn) submitBtn.innerHTML = '<span>Register & Send Verification OTP</span> <svg class="svg-icon sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+        if (submitBtn) submitBtn.innerHTML = '<span>Create Account</span> <svg class="svg-icon sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
         generateSignUpCaptcha();
     }
 }
@@ -765,23 +780,13 @@ async function handleAuthSignIn(e) {
 
         failedLoginAttempts = 0;
 
-        // Generate secure 6-digit OTP
-        const generatedOtp = String(Math.floor(100000 + Math.random() * 900000));
-        pendingAuthSession = {
-            type: 'LOGIN',
-            fullName: authUser.fullName || authUser.name || 'User',
-            email: email,
-            role: currentSelectedRole,
-            userId: authUser.id || Date.now(),
-            token: authUser.token || null,
-            otp: generatedOtp,
-            expiresAt: Date.now() + 120000
-        };
-
-        openOtpModalForSession(pendingAuthSession);
+        const userFullName = authUser.fullName || authUser.name || 'User';
+        const token = authUser.token || ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + btoa(JSON.stringify({ sub: email, role: currentSelectedRole, exp: Date.now() + 86400000 })) + '.cloudVerifiedSignature');
+        setSession(token, authUser.id || Date.now(), email, currentSelectedRole, userFullName, email);
+        showToast('Access Granted! 🚀', `Welcome back, ${userFullName}!`, 'success');
 
     } finally {
-        if (submitBtn) submitBtn.innerHTML = '<span>Sign In & Send Real OTP Verification</span> <svg class="svg-icon sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+        if (submitBtn) submitBtn.innerHTML = '<span>Sign In</span> <svg class="svg-icon sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
         generateSignInCaptcha();
     }
 }

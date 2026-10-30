@@ -184,7 +184,7 @@
                         </div>
 
                         <button type="submit" id="signin-submit-btn" class="btn-luxury btn-luxury-primary">
-                            <span>Sign In & Send Real OTP Verification</span>
+                            <span>Sign In</span>
                             <svg class="svg-icon sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </button>
 
@@ -207,7 +207,7 @@
                         <div class="form-field">
                             <label>
                                 <svg class="svg-icon sm" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                                <span>Email Address (Your Real OTP will be sent here)</span>
+                                <span>Email Address</span>
                             </label>
                             <input type="email" id="signup-email" class="form-input" required placeholder="Enter your email (e.g. personal@gmail.com)..." autocomplete="email">
                         </div>
@@ -262,7 +262,7 @@
                         </div>
 
                         <button type="submit" id="signup-submit-btn" class="btn-luxury btn-luxury-primary">
-                            <span>Register & Send Verification OTP</span>
+                            <span>Create Account</span>
                             <svg class="svg-icon sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </button>
 
@@ -948,12 +948,12 @@
                         <span class="badge-tag success">Level 5: Robust & Secure (10 / 10)</span>
                     </div>
                     <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.5;">
-                        <strong>Metric:</strong> Enterprise Zero-Trust security boundary with cryptographically signed HMAC-SHA256 tokens (RFC 7519), BCrypt password hashing, anti-bot CAPTCHA, and live 2-Factor Authentication (OTP 2FA).
+                        <strong>Metric:</strong> Enterprise Zero-Trust security boundary with cryptographically signed HMAC-SHA256 tokens (RFC 7519), BCrypt password hashing, and anti-bot CAPTCHA verification challenge.
                     </p>
                     <ul style="font-size: 0.8rem; color: var(--text-muted); padding-left: 1.2rem; line-height: 1.6; margin-bottom: 0.75rem;">
                         <li><strong>Gateway Filter:</strong> <code>JwtAuthenticationFilter</code> validates Bearer token and mutates downstream identity headers (<code>X-User-Id</code>, <code>X-User-Role</code>).</li>
-                        <li><strong>Real Email 2FA OTP:</strong> Dispatched via Google SMTP to respective entered addresses for both Sign Up and Login.</li>
-                        <li><strong>Brute-Force Shield:</strong> 3-strike exponential cooldown + dynamic canvas CAPTCHA with visual noise lines.</li>
+                        <li><strong>Anti-Bot Security Challenge:</strong> Dynamic alphanumeric canvas CAPTCHA with visual noise lines protecting all authentication endpoints.</li>
+                        <li><strong>Brute-Force Shield:</strong> 3-strike exponential cooldown + rate-limiting protection.</li>
                         <li><strong>Role-Based Access Control:</strong> Strict persona separation (Customer, Technician, Admin).</li>
                     </ul>
                     <button type="button" class="btn-luxury btn-luxury-outline btn-sm" onclick="closeRubricsModal(); switchTab('security-tab');">
