@@ -10,14 +10,14 @@ const BOOKING_DIRECT_URL = `http://${API_HOST}:8082/bookings`;
 const RECORD_DIRECT_URL = `http://${API_HOST}:8083/records`;
 const BILLING_DIRECT_URL = `http://${API_HOST}:8084/bills`;
 
-// Active Session State (Uses sessionStorage so opening site starts at login portal)
+// Active Session State (Checked from sessionStorage and localStorage so sessions and credentials persist across tabs and browser restarts)
 let authState = {
-    token: sessionStorage.getItem('pa_jwt_token') || '',
-    userId: sessionStorage.getItem('pa_user_id') || '',
-    username: sessionStorage.getItem('pa_username') || '',
-    role: sessionStorage.getItem('pa_role') || '',
-    fullName: sessionStorage.getItem('pa_fullname') || '',
-    email: sessionStorage.getItem('pa_email') || ''
+    token: sessionStorage.getItem('pa_jwt_token') || localStorage.getItem('pa_jwt_token') || '',
+    userId: sessionStorage.getItem('pa_user_id') || localStorage.getItem('pa_user_id') || '',
+    username: sessionStorage.getItem('pa_username') || localStorage.getItem('pa_username') || '',
+    role: sessionStorage.getItem('pa_role') || localStorage.getItem('pa_role') || '',
+    fullName: sessionStorage.getItem('pa_fullname') || localStorage.getItem('pa_fullname') || '',
+    email: sessionStorage.getItem('pa_email') || localStorage.getItem('pa_email') || ''
 };
 
 // DOM Content Loaded
@@ -438,10 +438,46 @@ function selectRolePortal(role) {
         switchAuthTab('signin');
     }
 
-    const signinForm = document.getElementById('auth-signin-form');
-    const signupForm = document.getElementById('auth-signup-form');
-    if (signinForm) signinForm.reset();
-    if (signupForm) signupForm.reset();
+    // Auto-populate saved credentials from database / localStorage
+    populateSavedCredentials(role);
+}
+
+// Auto-populate remembered credentials for instant 1-click access
+function populateSavedCredentials(role) {
+    const emailInput = document.getElementById('signin-email');
+    const passInput = document.getElementById('signin-password');
+    if (!emailInput || !passInput) return;
+
+    const db = getUserDatabase();
+
+    if (role === 'ROLE_ADMIN') {
+        emailInput.value = localStorage.getItem('pa_saved_admin_email') || 'gouravajjulasaisrikar@gmail.com';
+        passInput.value = localStorage.getItem('pa_saved_admin_pass') || 'admin123';
+    } else if (role === 'ROLE_CUSTOMER') {
+        const savedEmail = localStorage.getItem('pa_saved_customer_email');
+        const savedPass = localStorage.getItem('pa_saved_customer_pass');
+        if (savedEmail && savedPass) {
+            emailInput.value = savedEmail;
+            passInput.value = savedPass;
+        } else {
+            const customers = db.filter(u => u.role === 'ROLE_CUSTOMER');
+            const target = customers[customers.length - 1] || { email: 'customer@precisionauto.com', password: 'cust123' };
+            emailInput.value = target.email;
+            passInput.value = target.password;
+        }
+    } else if (role === 'ROLE_TECHNICIAN') {
+        const savedEmail = localStorage.getItem('pa_saved_technician_email');
+        const savedPass = localStorage.getItem('pa_saved_technician_pass');
+        if (savedEmail && savedPass) {
+            emailInput.value = savedEmail;
+            passInput.value = savedPass;
+        } else {
+            const techs = db.filter(u => u.role === 'ROLE_TECHNICIAN');
+            const target = techs[techs.length - 1] || { email: 'technician@precisionauto.com', password: 'tech123' };
+            emailInput.value = target.email;
+            passInput.value = target.password;
+        }
+    }
 }
 
 function backToRoleSelection() {
@@ -450,9 +486,7 @@ function backToRoleSelection() {
     if (roleView) roleView.style.display = 'block';
     if (authView) authView.style.display = 'none';
 
-    const signinForm = document.getElementById('auth-signin-form');
     const signupForm = document.getElementById('auth-signup-form');
-    if (signinForm) signinForm.reset();
     if (signupForm) signupForm.reset();
 }
 
@@ -663,6 +697,15 @@ async function handleAuthSignUp(e) {
         };
         saveUserToDatabase(newUser);
 
+        // Remember credentials for this role so they remain permanently saved
+        if (currentSelectedRole === 'ROLE_CUSTOMER') {
+            localStorage.setItem('pa_saved_customer_email', email);
+            localStorage.setItem('pa_saved_customer_pass', password);
+        } else if (currentSelectedRole === 'ROLE_TECHNICIAN') {
+            localStorage.setItem('pa_saved_technician_email', email);
+            localStorage.setItem('pa_saved_technician_pass', password);
+        }
+
         // Register with backend if reachable
         fetch(`${GATEWAY_URL}/auth/register`, {
             method: 'POST',
@@ -779,6 +822,18 @@ async function handleAuthSignIn(e) {
         }
 
         failedLoginAttempts = 0;
+
+        // Save sign-in credentials to localStorage so they persist whenever visiting site
+        if (currentSelectedRole === 'ROLE_ADMIN') {
+            localStorage.setItem('pa_saved_admin_email', email);
+            localStorage.setItem('pa_saved_admin_pass', password);
+        } else if (currentSelectedRole === 'ROLE_CUSTOMER') {
+            localStorage.setItem('pa_saved_customer_email', email);
+            localStorage.setItem('pa_saved_customer_pass', password);
+        } else if (currentSelectedRole === 'ROLE_TECHNICIAN') {
+            localStorage.setItem('pa_saved_technician_email', email);
+            localStorage.setItem('pa_saved_technician_pass', password);
+        }
 
         const userFullName = authUser.fullName || authUser.name || 'User';
         const token = authUser.token || ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + btoa(JSON.stringify({ sub: email, role: currentSelectedRole, exp: Date.now() + 86400000 })) + '.cloudVerifiedSignature');
@@ -1101,6 +1156,31 @@ function setSession(token, userId, username, role, fullName, email) {
     localStorage.setItem('pa_fullname', fullName);
     localStorage.setItem('pa_email', email);
     initAuthUI();
+}
+
+// User Sign Out: Safely cleans session while preserving user accounts & saved credentials in database
+function logout() {
+    authState = { token: '', userId: '', username: '', role: '', fullName: '', email: '' };
+    sessionStorage.removeItem('pa_jwt_token');
+    sessionStorage.removeItem('pa_user_id');
+    sessionStorage.removeItem('pa_username');
+    sessionStorage.removeItem('pa_role');
+    sessionStorage.removeItem('pa_fullname');
+    sessionStorage.removeItem('pa_email');
+    localStorage.removeItem('pa_jwt_token');
+    localStorage.removeItem('pa_user_id');
+    localStorage.removeItem('pa_username');
+    localStorage.removeItem('pa_role');
+    localStorage.removeItem('pa_fullname');
+    localStorage.removeItem('pa_email');
+
+    const loginScreen = document.getElementById('login-screen');
+    const appDashboard = document.getElementById('app-dashboard');
+    if (loginScreen) loginScreen.style.display = 'block';
+    if (appDashboard) appDashboard.style.display = 'none';
+
+    backToRoleSelection();
+    showToast('Signed Out', 'You have been safely signed out. Your credentials remain saved.', 'info');
 }
 
 // ==================== ENTERPRISE ACCOUNT GOVERNANCE ====================
